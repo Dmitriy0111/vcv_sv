@@ -1,0 +1,3 @@
+[submodule "rtl\\DebugScreenCore"]
+	path = rtl\\DebugScreenCore
+	url = https://github.com/Dmitriy0111/DebugScreenCore
