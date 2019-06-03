@@ -38,7 +38,7 @@ module dsc_tb;
     bit     [31 : 0]    test_mem    [31 : 0];
 
     // creating output matrix
-    img_matrix img_matrix_out = new (800,525,"../output_images/","out_image",'1);
+    img_matrix img_matrix_out = new (800,525,"../output_images/","out_image_",'1);
 
     assign regData = test_mem[regAddr];
     // creating one DebugScreenCore

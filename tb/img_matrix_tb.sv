@@ -25,9 +25,9 @@ module img_matrix_tb;
     logic   [7  : 0]    B;          // B-color
 
     // creating output matrix
-    img_matrix img_matrix_in = new (800,600,"../input_images/","in_image",'0);
+    img_matrix img_matrix_in = new (800,600,"../input_images/","in_image_",'0, '0 );
     // creating output matrix
-    img_matrix img_matrix_out = new (800,600,"../output_images/","out_image",'1);
+    img_matrix img_matrix_out = new (800,600,"../output_images/","out_image_",'1, '0 );
 
     // generate clock
     initial 
@@ -42,7 +42,8 @@ module img_matrix_tb;
         begin
             {R,G,B} = img_matrix_in.get_image_RGB();
             @(posedge clk);
-            if( img_matrix_out.set_image_RGB({R,G,B}) )
+            #(1ns);
+            if( img_matrix_out.set_image_RGB({~R,~G,~B}) )
             begin
                 img_matrix_out.load_img_to_txt();
                 #(T*10);

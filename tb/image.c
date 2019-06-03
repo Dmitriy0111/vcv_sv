@@ -42,7 +42,7 @@ int open_image(const char* path, int width, int height){
 /*
     function for loading pixel from image
 */
-int load_pix(int pix_pos,unsigned int * R,unsigned int * G,unsigned int * B){
+int load_pix(int pix_pos, unsigned int * R, unsigned int * G, unsigned int * B){
     if(image_i == NULL){
         printf("[ Error ] Input image is NULL\n");
         return 0;
@@ -68,7 +68,7 @@ svLogic create_image(int width, int height){
 /*
     function for storing pixel in output array
 */
-svLogic store_pix(int pix_pos,int R,int G,int B){
+svLogic store_pix(int pix_pos, int R, int G, int B){
     if(image_o == NULL){
         printf("[ Error ] : Storing pixel to output image is not successful.\n");
     }

@@ -40,6 +40,7 @@ package img_matrix_pkg;
         bit     [7 : 0]     B[][];          // B pixel array
         //cycle variable
         integer             cycle;          // Current cycle variable
+        bit                 stop_v = '1;    // if '1 then $stop executed
         
         //variable's for working with images
         string              path2folder;    // path    
@@ -61,7 +62,7 @@ package img_matrix_pkg;
         endfunction : path2file
         
         // class constructor
-        function new( integer Width_i, integer Height_i, string path2folder_i, string image_name_i, bit load_img = '0 );
+        function new( integer Width_i, integer Height_i, string path2folder_i, string image_name_i, bit load_img = '0, bit stop_v_i = '0 );
             // creating a one-dimensional array
             R = new [Width_i];
             G = new [Width_i];
@@ -86,6 +87,7 @@ package img_matrix_pkg;
             rgb_c = '0;
             // reset cycle
             cycle = '0;
+            stop_v = stop_v_i;
             // init help variables
             path2folder = path2folder_i;
             image_name = image_name_i;
@@ -95,7 +97,47 @@ package img_matrix_pkg;
                 load_img_from_txt();
             
         endfunction : new
-        
+
+        function recreate( integer Width_i, integer Height_i, string path2folder_i, string image_name_i, bit load_img = '0, bit stop_v_i = '0 );
+
+            R.delete();
+            G.delete();
+            B.delete();
+
+            // creating a one-dimensional array
+            R = new [Width_i];
+            G = new [Width_i];
+            B = new [Width_i];
+            // creating a two-dimensional array
+            foreach( R[i] )
+                R[i] = new [Height_i];
+            foreach( G[i] )
+                G[i] = new [Height_i];
+            foreach( B[i] )
+                B[i] = new [Height_i];
+            Height = Height_i;
+            Width  = Width_i; 
+            Resolution = Width * Height;
+            // reset bayer 
+            b_x = '0;
+            b_y = '0;
+            b_c = '0;
+            // reset rgb
+            rgb_x = '0;
+            rgb_y = '0;
+            rgb_c = '0;
+            // reset cycle
+            cycle = '0;
+            stop_v = stop_v_i;
+            // init help variables
+            path2folder = path2folder_i;
+            image_name = image_name_i;
+            common_name = path2file;
+            // load image
+            if( !load_img )
+                load_img_from_txt();
+
+        endfunction : recreate
         //getting pixel in Bayer format
         /*
         pixel format
@@ -140,7 +182,8 @@ package img_matrix_pkg;
                 b_c = '0; 
                 load_img_from_txt();
                 $display("next image loaded");
-                $stop;
+                if( stop_v )
+                    $stop;
             end
             
             return ret_bayer;
@@ -193,6 +236,8 @@ package img_matrix_pkg;
         */
         function bit set_image_RGB( bit[23 : 0] pixel_rgb );
             bit eoi = '0;    //end of image
+            this.set_RGB( rgb_x , rgb_y , pixel_rgb );
+
             if( rgb_c == this.Resolution )
             begin
                 eoi = '1;
@@ -202,14 +247,13 @@ package img_matrix_pkg;
             end
             rgb_c++;
             
-            this.set_RGB( rgb_x , rgb_y , pixel_rgb );
-            
             rgb_x++;
             if( rgb_x == this.Width )
             begin
                 rgb_x = '0;
                 rgb_y++;
             end
+
             return eoi;
         endfunction : set_image_RGB
         /*
@@ -244,7 +288,8 @@ package img_matrix_pkg;
                 for( j = 0 ; j < Height ; j++ )
                     store_pix( ( i + j * Width ) * 3 , R[i][j] , G[i][j] , B[i][j] );
             save_image( path2file , Width , Height );
-            $stop;
+            if( stop_v )
+                $stop;
             cycle++;   
         endtask : load_img_to_txt
 

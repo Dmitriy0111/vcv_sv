@@ -16,7 +16,9 @@ TB_DIR   = $(PWD)/tb
 
 clean: \
 	sim_clean \
-	std_del
+	std_del \
+	in_img_clean \
+	rtl_clean
 
 sim_all: \
 	sim_cmd
@@ -42,7 +44,6 @@ VSIM_OPT_GUI     = -onfinish stop
 sim_clean:
 	rm -rfd $(VSIM_DIR)
 	rm -rfd output_images
-	rm -rfd input_images
 
 sim_dir: sim_clean
 	mkdir $(VSIM_DIR)
@@ -59,3 +60,9 @@ stb_load:
 
 std_del:
 	rm -rfd stb
+
+in_img_clean:
+	rm -rfd input_images
+
+rtl_clean:
+	rm -rfd rtl/*
