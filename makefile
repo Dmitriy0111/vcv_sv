@@ -18,7 +18,8 @@ clean: \
 	sim_clean \
 	std_del \
 	in_img_clean \
-	rtl_clean
+	rtl_clean \
+	MinesweeperFPGA_del
 
 sim_all: \
 	sim_cmd
@@ -57,9 +58,15 @@ sim_gui: sim_dir
 
 stb_load:
 	git clone https://github.com/nothings/stb
-
+	
 std_del:
 	rm -rfd stb
+
+MinesweeperFPGA_load:
+	git clone https://github.com//MinesweeperFPGA rtl/MinesweeperFPGA
+
+MinesweeperFPGA_del:
+	rm -rfd rtl/MinesweeperFPGA
 
 in_img_clean:
 	rm -rfd input_images
