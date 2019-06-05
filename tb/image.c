@@ -72,7 +72,7 @@ svLogic store_pix(int pix_pos, int R, int G, int B){
     if(image_o == NULL){
         printf("[ Error ] : Storing pixel to output image is not successful.\n");
     }
-    image_o[pix_pos] = R;
+    image_o[pix_pos+0] = R;
     image_o[pix_pos+1] = G;
     image_o[pix_pos+2] = B;
 }

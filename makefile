@@ -18,8 +18,8 @@ clean: \
 	sim_clean \
 	std_del \
 	in_img_clean \
-	rtl_clean \
-	MinesweeperFPGA_del
+	vss_clean \
+	MinesweeperFPGA_clean
 
 sim_all: \
 	sim_cmd
@@ -65,11 +65,11 @@ std_del:
 MinesweeperFPGA_load:
 	git clone https://github.com//MinesweeperFPGA rtl/MinesweeperFPGA
 
-MinesweeperFPGA_del:
+MinesweeperFPGA_clean:
 	rm -rfd rtl/MinesweeperFPGA
 
 in_img_clean:
 	rm -rfd input_images
 
-rtl_clean:
-	rm -rfd rtl/*
+vss_clean:
+	rm -rfd rtl/video_stream_scaler

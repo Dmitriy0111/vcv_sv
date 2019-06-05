@@ -66,11 +66,12 @@ module MinesweeperFPGA_tb;
         ps2_data = '1;
         ps2_clk = '1;
         @(posedge cycle_bit);
-        keyboard_send(Sp_key);
+        button_toggle(Sp_key);
         @(posedge cycle_bit);
-        keyboard_send(D_key);
+        button_toggle(D_key);
         @(posedge cycle_bit);
-        keyboard_send(En_key);
+        button_toggle(En_key);
+        @(posedge cycle_bit);
         $stop;
     end
 
@@ -98,7 +99,7 @@ module MinesweeperFPGA_tb;
             begin
                 if( img_matrix_out.set_image_RGB( { { 8 { rgb[2] } } , { 8 { rgb[1] } } , { 8 { rgb[0] } } } ) )
                 begin
-                    img_matrix_out.load_img_to_txt();
+                    img_matrix_out.load_img_to_mem();
                     rep_cycles ++;
                     cycle_bit = '1;
                     if( rep_cycles == rep_c )
@@ -108,7 +109,7 @@ module MinesweeperFPGA_tb;
         end
     end
 
-    task symbol_send(logic [7 : 0] data, integer period);
+    task keyboard_send(logic [7 : 0] data, integer period);
         bit odd_parity;
         odd_parity = ~^data;
         // generate start
@@ -139,13 +140,13 @@ module MinesweeperFPGA_tb;
         ps2_clk = '0;
         repeat(period/2) @(posedge clk);
         ps2_clk = '1;
-    endtask : symbol_send
-
-    task keyboard_send(logic [7 : 0] data);
-        symbol_send(data,1500);
-        repeat(10000) @(posedge clk);
-        symbol_send(8'hF0,1500);
-        repeat(10000) @(posedge clk);
     endtask : keyboard_send
+
+    task button_toggle(logic [7 : 0] data);
+        keyboard_send(data,1500);
+        repeat(10000) @(posedge clk);
+        keyboard_send(8'hF0,1500);
+        repeat(10000) @(posedge clk);
+    endtask : button_toggle
 
 endmodule : MinesweeperFPGA_tb

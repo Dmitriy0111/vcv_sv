@@ -81,7 +81,7 @@ module racing_game_v3_tb;
             begin
                 if( img_matrix_out.set_image_RGB( { { 8 { rgb[2] } } , { 8 { rgb[1] } } , { 8 { rgb[0] } } } ) )
                 begin
-                    img_matrix_out.load_img_to_txt();
+                    img_matrix_out.load_img_to_mem();
                     rep_cycles ++;
                     if( rep_cycles == rep_c )
                         $stop;

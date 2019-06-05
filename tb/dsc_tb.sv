@@ -92,7 +92,7 @@ module dsc_tb;
             if( resetn )
             begin
                 if( img_matrix_out.set_image_RGB({R,R,G,G,B,B}) )
-                    img_matrix_out.load_img_to_txt();
+                    img_matrix_out.load_img_to_mem();
             end
         end
     end

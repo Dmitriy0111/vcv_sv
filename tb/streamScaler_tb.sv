@@ -21,9 +21,9 @@ module streamScaler_tb;
                         rep_c = 40;
 
     // creating output matrix
-    img_matrix img_matrix_in = new (640,480,"../input_images/","in_image_",'0);
+    img_matrix img_matrix_in = new (800,600,"../input_images/","in_image_",'0);
     // creating output matrix
-    img_matrix img_matrix_out = new (320,240,"../output_images/","out_image_",'1);
+    img_matrix img_matrix_out = new (400,300,"../output_images/","out_image_",'1);
 
     bit     [0  : 0]    clk;
     bit     [0  : 0]    reset; 
@@ -63,16 +63,16 @@ module streamScaler_tb;
 
         //Output
         .dOut               ( rgb_out               ),
-        .dOutValid          ( dOutValid             ),          //latency of 4 clock cycles after nextDout is asserted
+        .dOutValid          ( dOutValid             ),  //latency of 4 clock cycles after nextDout is asserted
         .nextDout           ( nextDout              ),
         //Control
         .inputDiscardCnt    ( 0                     ),  //Number of input pixels to discard before processing data. Used for clipping
-        .inputXRes          ( 640 - 1               ),  //Resolution of input data minus 1
-        .inputYRes          ( 480 - 1               ),  
-        .outputXRes         ( 320 - 1               ),  //Resolution of output data minus 1
-        .outputYRes         ( 240 - 1               ),
-        .xScale             ( 32'h4000*2              ),  //Scaling factors. Input resolution scaled up by 1/xScale. Format Q SCALE_INT_BITS.SCALE_FRAC_BITS
-        .yScale             ( 32'h4000*2              ),  //Scaling factors. Input resolution scaled up by 1/yScale. Format Q SCALE_INT_BITS.SCALE_FRAC_BITS
+        .inputXRes          ( 800 - 1               ),  //Resolution of input data minus 1
+        .inputYRes          ( 600 - 1               ),  
+        .outputXRes         ( 400 - 1               ),  //Resolution of output data minus 1
+        .outputYRes         ( 300 - 1               ),
+        .xScale             ( 32'h4000*2            ),  //Scaling factors. Input resolution scaled up by 1/xScale. Format Q SCALE_INT_BITS.SCALE_FRAC_BITS
+        .yScale             ( 32'h4000*2            ),  //Scaling factors. Input resolution scaled up by 1/yScale. Format Q SCALE_INT_BITS.SCALE_FRAC_BITS
         .leftOffset         ( 0                     ),  //Integer/fraction of input pixel to offset output data horizontally right. Format Q OUTPUT_X_RES_WIDTH.SCALE_FRAC_BITS
         .topFracOffset      ( 0                     ),  //Fraction of input pixel to offset data vertically down. Format Q0.SCALE_FRAC_BITS
         .nearestNeighbor    ( nearestNeighbor       )   //Use nearest neighbor resize instead of bilinear
@@ -81,12 +81,8 @@ module streamScaler_tb;
     initial
     begin
         repeat(rst_delay*3) @(posedge clk);
-        start = '1;
-        @(posedge clk);
-        start = '0;
-        nearestNeighbor = '1;
+        nearestNeighbor = '0;
         nextDout = '1;
-        dInValid = '1;
     end
 
     // generate clock
@@ -105,17 +101,44 @@ module streamScaler_tb;
     // working with output matrix
     initial
     begin
+        start = '1;
+        @(posedge clk);
+        start = '0;
         forever
         begin
             @(posedge clk);
             if( !reset )
             begin
+                dInValid = '1;
                 if( nextDin )
-                    rgb_in = img_matrix_in.get_image_RGB();
+                    if( img_matrix_in.get_image_RGB( rgb_in ) )
+                    begin
+                        @(posedge clk);
+                        dInValid = '0;
+                        @(posedge clk);
+                        start = '1;
+                        @(posedge clk);
+                        @(posedge clk);
+                        start = '0;
+                        @(posedge clk);
+                        @(posedge clk);
+                        @(posedge clk);
+                        dInValid = '1;
+                    end
+            end
+        end
+    end
+    initial
+    begin
+        forever
+        begin
+            @(posedge clk);
+            if( !reset )
+            begin
                 if( dOutValid )
                     if( img_matrix_out.set_image_RGB( rgb_out ) )
                     begin
-                        img_matrix_out.load_img_to_txt();
+                        img_matrix_out.load_img_to_mem();
                         rep_cycles ++;
                         if( rep_cycles == rep_c )
                             $stop;

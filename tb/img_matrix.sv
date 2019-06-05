@@ -43,23 +43,28 @@ package img_matrix_pkg;
         bit                 stop_v = '1;    // if '1 then $stop executed
         
         //variable's for working with images
+        integer             fd;
         string              path2folder;    // path    
         string              image_name;     // sub-image name
         string              cycle_s = "";   // current cycle variable (string)
         string              common_name;    // current image name  
         // function to returning current image name
-        function string path2file ();
+        function string path2file (string format);
 
             cycle_s.itoa(cycle);    // converting cycle (integer) to cycle_s (string)
             common_name =   {
                                 path2folder,
                                 image_name,
                                 cycle_s,
-                                ".jpg"
+                                format
                             };
             return common_name;
         
         endfunction : path2file
+
+        task cycle_inc();
+            this.cycle++;
+        endtask : cycle_inc
         
         // class constructor
         function new( integer Width_i, integer Height_i, string path2folder_i, string image_name_i, bit load_img = '0, bit stop_v_i = '0 );
@@ -91,10 +96,13 @@ package img_matrix_pkg;
             // init help variables
             path2folder = path2folder_i;
             image_name = image_name_i;
-            common_name = path2file;
             // load image
             if( !load_img )
-                load_img_from_txt();
+            begin
+                common_name = path2file(".jpg");
+                load_img_from_mem();
+                cycle_inc();
+            end
             
         endfunction : new
 
@@ -132,10 +140,13 @@ package img_matrix_pkg;
             // init help variables
             path2folder = path2folder_i;
             image_name = image_name_i;
-            common_name = path2file;
             // load image
             if( !load_img )
-                load_img_from_txt();
+            begin
+                common_name = path2file(".jpg");
+                load_img_from_mem();
+                cycle_inc();
+            end
 
         endfunction : recreate
         //getting pixel in Bayer format
@@ -180,8 +191,10 @@ package img_matrix_pkg;
                 b_x = '0;
                 b_y = '0;
                 b_c = '0; 
-                load_img_from_txt();
-                $display("next image loaded");
+                common_name = path2file(".jpg");
+                load_img_from_mem();
+                cycle_inc();
+                $display("next image loaded %t ns", $time);
                 if( stop_v )
                     $stop;
             end
@@ -206,10 +219,10 @@ package img_matrix_pkg;
         /*
             task for getting image pixel value in RGB format with auto increment
         */
-        function bit[23 : 0] get_image_RGB();
-            bit[23 : 0] ret_RGB;
+        function bit get_image_RGB( ref logic [23 : 0] pixel_rgb );
+            bit eoi = '0;    //end of image
             rgb_c++;
-            ret_RGB = this.get_RGB(rgb_x,rgb_y);
+            pixel_rgb = this.get_RGB(rgb_x,rgb_y);
             rgb_x++;
             if( rgb_x == this.Width )
             begin
@@ -218,12 +231,16 @@ package img_matrix_pkg;
             end
             if( rgb_c == this.Resolution )
             begin
+                eoi = '1;
                 rgb_x = '0;
                 rgb_y = '0;
                 rgb_c = '0;
-                load_img_from_txt();
+                common_name = path2file(".jpg");
+                load_img_from_mem();
+                $display("next image loaded %t ns", $time);
+                cycle_inc();
             end
-            return ret_RGB;
+            return eoi;
         endfunction : get_image_RGB
         /*
             task for setting image pixel value in RGB format
@@ -237,13 +254,13 @@ package img_matrix_pkg;
         function bit set_image_RGB( bit[23 : 0] pixel_rgb );
             bit eoi = '0;    //end of image
             this.set_RGB( rgb_x , rgb_y , pixel_rgb );
-
             if( rgb_c == this.Resolution )
             begin
                 eoi = '1;
                 rgb_x = '0;
                 rgb_y = '0;
                 rgb_c = '0;
+                $display("Image receive %t ns", $time);
             end
             rgb_c++;
             
@@ -259,13 +276,13 @@ package img_matrix_pkg;
         /*
             task for loading image from file in matrix
         */
-        task load_img_from_txt();
+        task load_img_from_mem();
             integer read_value;
             integer i,j;
             int     null_detect;
             do
             begin
-                null_detect = open_image( path2file, Width, Height );
+                null_detect = open_image( path2file(".jpg"), Width, Height );
                 if( null_detect != 1 )
                     cycle = '0;
             end
@@ -275,23 +292,84 @@ package img_matrix_pkg;
                 for( j = 0 ; j < Height ;j++ )
                     load_pix( (i + j * Width ) * 3 , R[i][j] , G[i][j] , B[i][j] );
             free_image();
-            cycle++;        
-        endtask : load_img_from_txt
+        endtask : load_img_from_mem
         /*
             task for loading image from matrix in file
         */
-        task load_img_to_txt();
+        task load_img_to_mem();
             integer read_value;
             integer i,j;
             create_image( Width , Height );
             for( i = 0 ; i < Width ;i++ )
                 for( j = 0 ; j < Height ; j++ )
                     store_pix( ( i + j * Width ) * 3 , R[i][j] , G[i][j] , B[i][j] );
-            save_image( path2file , Width , Height );
+            save_image( path2file(".jpg") , Width , Height );
             if( stop_v )
                 $stop;
-            cycle++;   
+            cycle_inc();
+        endtask : load_img_to_mem
+        //Task for loading image for file in matrix
+        task load_img_to_txt();
+            integer read_value;
+            integer i,j;
+            
+            fd = $fopen(path2file(".txt"),"w") ;
+            if( !fd )
+            begin
+                $display("file is not open");
+                $stop;
+            end
+            for( j=0 ; j<Height ; j++ )
+            begin
+                for( i=0 ; i<Width ; i++ )
+                begin
+                    mod_fwrite(R[i][j]);
+                    mod_fwrite(G[i][j]);
+                    mod_fwrite(B[i][j]);
+                    $fwrite(fd, " ");
+                end
+                $fwrite(fd, "\n");
+            end  
+            $fflush(fd);    
+            $fclose(fd);         
+            //$stop;
         endtask : load_img_to_txt
+
+        //Task for loading image from file in matrix
+        task load_img_from_txt();
+            integer read_value;
+            integer i,j;
+            fd = $fopen(path2file(".txt"),"r");
+            if( !fd )
+            begin
+                $display("file is not open");
+                $stop;
+            end
+            for( j=0 ; j<Height ; j++ )
+                for( i=0 ; i<Width ; i++ )
+                    begin
+                        $fscanf(fd,"%d",read_value); 
+                        R[i][j] = read_value/1000000;
+                        G[i][j] = (read_value/1000)%1000;
+                        B[i][j] = read_value%1000;
+                    end      
+            $fclose(fd);  
+        endtask : load_img_from_txt
+
+        task mod_fwrite(bit[7:0] data);
+            if(data<10)
+            begin
+                $fwrite(fd, "00");
+                $fwrite(fd, "%0d", data);
+            end
+            else if(data<100)
+            begin
+                $fwrite(fd, "0");
+                $fwrite(fd, "%0d", data);
+            end
+            else 
+                $fwrite(fd, "%0d", data);
+        endtask : mod_fwrite
 
         task clear_res();
             R.delete();

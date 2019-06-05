@@ -17,12 +17,13 @@ module img_matrix_tb;
     import img_matrix_pkg::*;
 
     parameter           T = 10,
-                        rst_delay = 7;
+                        rst_delay = 7,
+                        rep_c = 10;
 
     bit     [0  : 0]    clk;        // clock
-    logic   [7  : 0]    R;          // R-color
-    logic   [7  : 0]    G;          // G-color
-    logic   [7  : 0]    B;          // B-color
+    logic   [23 : 0]    RGB;
+    
+    integer             rep_cycles = 0;
 
     // creating output matrix
     img_matrix img_matrix_in = new (800,600,"../input_images/","in_image_",'0, '0 );
@@ -40,13 +41,18 @@ module img_matrix_tb;
     begin
         forever
         begin
-            {R,G,B} = img_matrix_in.get_image_RGB();
+            img_matrix_in.get_image_RGB(RGB);
             @(posedge clk);
             #(1ns);
-            if( img_matrix_out.set_image_RGB({~R,~G,~B}) )
+            if( img_matrix_out.set_image_RGB(RGB) )
             begin
                 img_matrix_out.load_img_to_txt();
+                $stop;
+                img_matrix_out.load_img_to_mem();
                 #(T*10);
+                rep_cycles ++;
+                if( rep_cycles == rep_c )
+                    $stop;
             end
         end
     end
