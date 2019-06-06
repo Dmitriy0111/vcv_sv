@@ -41,13 +41,11 @@ module img_matrix_tb;
     begin
         forever
         begin
-            img_matrix_in.get_image_RGB(RGB);
+            img_matrix_in.get_image_RGB_ainc(RGB);
             @(posedge clk);
             #(1ns);
-            if( img_matrix_out.set_image_RGB(RGB) )
+            if( img_matrix_out.set_image_RGB(~RGB) )
             begin
-                img_matrix_out.load_img_to_txt();
-                $stop;
                 img_matrix_out.load_img_to_mem();
                 #(T*10);
                 rep_cycles ++;

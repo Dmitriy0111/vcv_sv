@@ -2,9 +2,7 @@
 #set test    "racing_game_v3_tb"
 #set test    "test_hvsync_tb"
 #set test    "MinesweeperFPGA"
-#set test    "img_matrix_tb"
-#set test    "threshold_tb"
-set test    "streamScaler_tb"
+set test    "img_matrix_tb"
 
 if {$test == "img_matrix_tb"} {
 
@@ -24,8 +22,6 @@ if {$test == "img_matrix_tb"} {
 
     set s0 ../rtl/DebugScreenCore/rtl/*.*v
     set s1 ../tb/*.*v
-    set s2 ../tb/*.*c
-    set s3 ../tb/*.*h
 
     vlog -sv -dpiheader ../tb/image.h $i0 $i1 $s0 $s1 ../tb/image.c  
 
@@ -98,32 +94,6 @@ if {$test == "img_matrix_tb"} {
     add wave -position insertpoint sim:/MinesweeperFPGA_tb/ctrl_main_block_0/x_keyboard/*
     add wave -position insertpoint sim:/MinesweeperFPGA_tb/ctrl_main_block_0/x_keyboard/x_key/*
     add wave -position insertpoint sim:/MinesweeperFPGA_tb/ctrl_main_block_0/x_ctrl_game_block/*
-
-} elseif {$test == "threshold_tb"} {
-    
-    set i0 +incdir+../rtl/threshold
-    set i1 +incdir+../tb
-
-    set s0 ../rtl/threshold/*.*v
-    set s1 ../tb/*.*v
-
-    vlog -sv -dpiheader ../tb/image.h $i0 $i1 $s0 $s1 ../tb/image.c  
-
-    vsim -novopt work.threshold_tb
-    add wave -position insertpoint sim:/threshold_tb/*
-
-} elseif {$test == "streamScaler_tb"} {
-    
-    set i0 +incdir+../rtl/video_stream_scaler/rtl/verilog
-    set i1 +incdir+../tb
-
-    set s0 ../rtl/video_stream_scaler/rtl/verilog/*.*v
-    set s1 ../tb/*.*v
-
-    vlog -sv -dpiheader ../tb/image.h $i0 $i1 $s0 $s1 ../tb/image.c  
-
-    vsim -novopt work.streamScaler_tb
-    add wave -position insertpoint sim:/streamScaler_tb/*
 
 }
 

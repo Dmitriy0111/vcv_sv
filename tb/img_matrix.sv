@@ -219,7 +219,7 @@ package img_matrix_pkg;
         /*
             task for getting image pixel value in RGB format with auto increment
         */
-        function bit get_image_RGB( ref logic [23 : 0] pixel_rgb );
+        function bit get_image_RGB_ainc( ref logic [23 : 0] pixel_rgb );
             bit eoi = '0;    //end of image
             rgb_c++;
             pixel_rgb = this.get_RGB(rgb_x,rgb_y);
@@ -241,6 +241,11 @@ package img_matrix_pkg;
                 cycle_inc();
             end
             return eoi;
+        endfunction : get_image_RGB_ainc
+
+        function bit get_image_RGB( ref logic [23 : 0] pixel_rgb );
+            bit eoi = '0;    //end of image
+            pixel_rgb = this.get_RGB(rgb_x,rgb_y);
         endfunction : get_image_RGB
         /*
             task for setting image pixel value in RGB format
