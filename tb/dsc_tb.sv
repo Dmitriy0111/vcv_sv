@@ -7,8 +7,6 @@
 *  Copyright(c)    :   2019 Vlasov D.V
 */
 
-`include "img_matrix.sv"
-
 module dsc_tb;
 
     timeunit            1ns;
@@ -19,7 +17,7 @@ module dsc_tb;
     parameter           T = 10,
                         rst_delay = 7;
 
-    localparam          cpu = "nanoFOX",
+    localparam          cpu = "schoolMIPS",
                         sub_path = "../rtl/DebugScreenCore/";
 
     bit     [0  : 0]    clk;        // clock

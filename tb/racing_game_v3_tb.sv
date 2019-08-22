@@ -7,8 +7,6 @@
 *  Copyright(c)    :   2019 Vlasov D.V
 */
 
-`include "img_matrix.sv"
-
 module racing_game_v3_tb;
 
     timeunit            1ns;
