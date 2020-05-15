@@ -1,10 +1,10 @@
 /*
 *  File            :   racing_game_v3_tb.sv
 *  Autor           :   Vlasov D.V
-*  Data            :   01.06.2019
+*  Data            :   13.05.2020
 *  Language        :   SystemVerilog
-*  Description     :   This is testbench file for wrapper_for_8bitworkshop_tb
-*  Copyright(c)    :   2019 Vlasov D.V
+*  Description     :   This is testbench file for racing_game wrapper for 8bitworkshop
+*  Copyright(c)    :   2019-2020 Vlasov D.V
 */
 
 module racing_game_v3_tb;
@@ -12,14 +12,12 @@ module racing_game_v3_tb;
     timeunit            1ns;
     timeprecision       1ns;
 
-    import img_matrix_pkg::*;
+    import work_pkg::*;
 
     parameter           T = 10,
                         rst_delay = 7,
-                        rep_c = 40;
-
-    // creating output matrix
-    img_matrix img_matrix_out = new (800,525,"../output_images/","out_image_",'1);
+                        rep_c = 10,
+                        use_matrix = "img_matrix";
 
     bit     [0 : 0]     clk;
     bit     [0 : 0]     reset; 
@@ -29,9 +27,8 @@ module racing_game_v3_tb;
     logic   [0 : 0]     left;
     logic   [0 : 0]     right;
     logic   [3 : 0]     keys;
-    integer             rep_cycles = 0;
 
-    assign keys = '0 | {right,left};
+    int                 rep_cycles = 0;
 
     wrapper_racing_game_v3
     wrapper_racing_game_v3_0
@@ -44,25 +41,41 @@ module racing_game_v3_tb;
         .rgb        ( rgb       )
     );
 
+    base_matrix matrix_out;
+
+    assign keys = '0 | { right , left };
+
     initial
     begin
-        
+        case(use_matrix)
+            "img_matrix":
+            begin
+                img_matrix l_matrix_out = new(800, 525, "../output_images/", "out_image_");
+                matrix_out = l_matrix_out;
+            end
+            "ppm_matrix":
+            begin
+                ppm_matrix l_matrix_out = new(800, 525, "../output_images/", "out_image_");
+                matrix_out = l_matrix_out;
+            end
+        endcase
     end
+
     initial
     begin
         left    = 1'b0;
         right   = 1'b1;
     end
     initial
-        $readmemb("../rtl/wrapper_for_8bitworkshop/fpga-examples/car.hex",wrapper_racing_game_v3_0.racing_game_top_v3_0.car.bitarray);
+        $readmemb( "../rtl/wrapper_for_8bitworkshop/fpga-examples/car.hex", wrapper_racing_game_v3_0.racing_game_top_v3_0.car.bitarray );
 
     // generate clock
     initial 
     begin
         forever 
-            #(T/2) clk = ~ clk;
+            #( T / 2 ) clk = ~ clk;
     end
-    // generate reset, enable, foreground and background
+    // generate reset
     initial 
     begin 
         reset = '1;
@@ -77,9 +90,9 @@ module racing_game_v3_tb;
             @(posedge wrapper_racing_game_v3_0.clk_div);
             if( !reset )
             begin
-                if( img_matrix_out.set_image_RGB( { { 8 { rgb[2] } } , { 8 { rgb[1] } } , { 8 { rgb[0] } } } ) )
+                if( matrix_out.set_image_RGB( { { 8 { rgb[2] } } , { 8 { rgb[1] } } , { 8 { rgb[0] } } } ) )
                 begin
-                    img_matrix_out.load_img_to_mem();
+                    matrix_out.save_matrix();
                     rep_cycles ++;
                     if( rep_cycles == rep_c )
                         $stop;
