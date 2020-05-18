@@ -46,8 +46,8 @@ module test_matrix_tb;
             end
             "ppm_matrix":
             begin
-                ppm_matrix l_matrix_in  = new(1024, 768, "../input_images/", "in_image_","P6");
-                ppm_matrix l_matrix_out = new(1024, 768, "../output_images/", "out_image_","P6");
+                ppm_matrix l_matrix_in  = new(1024, 768, "../input_images/", "in_image_","P3");
+                ppm_matrix l_matrix_out = new(1024, 768, "../output_images/", "out_image_","P3");
                 matrix_in = l_matrix_in;
                 matrix_out = l_matrix_out;
             end

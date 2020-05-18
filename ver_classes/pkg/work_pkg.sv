@@ -1,5 +1,12 @@
-//  Package: matrix_pkg
-//
+/*
+*  File            :   work_pkg.sv
+*  Autor           :   Vlasov D.V
+*  Data            :   15.05.2020
+*  Language        :   SystemVerilog
+*  Description     :   This is work package
+*  Copyright(c)    :   2019-2020 Vlasov D.V
+*/
+
 package work_pkg;
 
     import "DPI-C" function int get_current_time();

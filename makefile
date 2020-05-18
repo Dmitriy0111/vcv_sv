@@ -1,9 +1,16 @@
 
 help:
-	$(info make help         - show this message)
-	$(info make clean        - delete synth and simulation folders)
-	$(info make sim_cmd      - run simulation in cmd mode)
-	$(info make sim          - run simulation in gui mode)
+	$(info make help             - show this message)
+	$(info make clean            - delete synth and simulation folders)
+	$(info make sim_cmd          - run simulation in cmd mode)
+	$(info make sim              - run simulation in gui mode)
+	$(info make stb_load         - load stb repository)
+	$(info make stb_clean        - clean stb repository)
+	$(info make load_all_rtl     - load rtl repository)
+	$(info make clean_all_rtl    - clean rtl repository)
+	$(info make create_imagesf   - create output_images and input_images folders)
+	$(info make clean_imagesf    - clean output_images and input_images folders)
+	$(info make load_test_image  - load test images in input_images folder)
 	$(info Open and read the Makefile for details)
 	@true
 
@@ -16,10 +23,7 @@ TB_DIR   = $(PWD)/tb
 # common make targets
 
 clean: \
-	sim_clean \
-	std_clean \
-	in_img_clean \
-	MinesweeperFPGA_clean
+	sim_clean
 
 sim_all: \
 	sim_cmd
@@ -46,14 +50,9 @@ VSIM_OPT_GUI     = -onfinish stop
 
 sim_clean:
 	rm -rfd $(VSIM_DIR)
-	rm -rfd output_images
-	rm -rfd input_images
 
 sim_dir: sim_clean
 	mkdir $(VSIM_DIR)
-	mkdir output_images
-	mkdir input_images
-	make load_test_image
 
 sim_cmd: sim_dir
 	$(VSIM_BIN) $(VSIM_OPT_COMMON) $(VSIM_OPT_CMD)
@@ -61,20 +60,54 @@ sim_cmd: sim_dir
 sim_gui: sim_dir
 	$(VSIM_BIN) $(VSIM_OPT_COMMON) $(VSIM_OPT_GUI) &
 
+########################################################
+# working with stb repository
+
 stb_load:
 	git clone https://github.com/nothings/stb
 	
-std_clean:
+stb_clean:
 	rm -rfd stb
 
+########################################################
+# working with rtl's examples
+
+load_all_rtl:
+	make MinesweeperFPGA_load
+	make DebugScreenCore_load
+	make wrapper_for_8bitworkshop_load
+
+clean_all_rtl:
+	rm -rfd rtl
+
 MinesweeperFPGA_load:
-	git clone https://github.com//MinesweeperFPGA rtl/MinesweeperFPGA
+	git clone https://github.com/capitanov/MinesweeperFPGA rtl/MinesweeperFPGA
 
 MinesweeperFPGA_clean:
 	rm -rfd rtl/MinesweeperFPGA
 
-in_img_clean:
+DebugScreenCore_load:
+	git clone https://github.com/dmitriy0111/DebugScreenCore rtl/DebugScreenCore
+
+DebugScreenCore_clean:
+	rm -rfd rtl/DebugScreenCore
+
+wrapper_for_8bitworkshop_load:
+	git clone https://github.com/dmitriy0111/wrapper_for_8bitworkshop rtl/wrapper_for_8bitworkshop
+
+wrapper_for_8bitworkshop_clean:
+	rm -rfd rtl/wrapper_for_8bitworkshop
+
+########################################################
+# working with images
+
+clean_imagesf:
+	rm -rfd output_images
 	rm -rfd input_images
+
+create_imagesf:
+	mkdir output_images
+	mkdir input_images
 
 load_test_image:
 	cp test_image/Penguins.jpg input_images/in_image_0.jpg
