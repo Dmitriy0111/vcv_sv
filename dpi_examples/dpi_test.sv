@@ -12,7 +12,9 @@ import "DPI-C" function void dpi_create_tda(int size_0, int size_1);
 import "DPI-C" function void dpi_free_tda();
 import "DPI-C" function void dpi_print_tda(int size_0, int size_1);
 import "DPI-C" context function void dpi_rand_tda(int size_0, int size_1);
-import "DPI-C" function int  dpi_get_tda(input int pos_0, int pos_1);
+import "DPI-C" function int   dpi_ret_e_tda(input int pos_0, int pos_1);
+import "DPI-C" function void  dpi_get_e_tda(input int pos_0, int pos_1, output int element);
+import "DPI-C" function void  dpi_get_tda(output int arr[][], input int size_0, int size_1);
 import "DPI-C" function void dpi_set_tda(int arr[][], int size_0, int size_1);
 import "DPI-C" function int  dpi_comp_arr(int arr[][], int size_0, int size_1);
 
@@ -31,8 +33,8 @@ module dpi_test;
     timeprecision       1ns;
 
     int tda [][];
-    int size_0;
-    int size_1;
+    int size_0 = 3;
+    int size_1 = 3;
 
     initial
     begin
@@ -50,7 +52,7 @@ module dpi_test;
         dpi_print_tda(size_0,size_1);
         $display("Copy values from C array to SystemVerilog array");
         foreach(tda[i,j])
-            tda[i][j] = dpi_get_tda(i,j);
+            dpi_get_e_tda(i,j,tda[i][j]); // tda[i][j] = dpi_ret_e_tda(i,j);
         $display("Compare C and SystemVerilog arrays");
         dpi_comp_arr(tda,size_0,size_1);
         $display("Randomize SystemVerilog arrays");

@@ -46,10 +46,18 @@ dpi_get_dv(
     int* val);
 
 DPI_LINK_DECL DPI_DLLESPEC
-int
-dpi_get_tda(
+void
+dpi_get_e_tda(
     int pos_0,
-    int pos_1);
+    int pos_1,
+    int* element);
+
+DPI_LINK_DECL DPI_DLLESPEC
+void
+dpi_get_tda(
+    const svOpenArrayHandle arr,
+    int size_0,
+    int size_1);
 
 DPI_LINK_DECL DPI_DLLESPEC
 void
@@ -62,6 +70,12 @@ void
 dpi_rand_tda(
     int size_0,
     int size_1);
+
+DPI_LINK_DECL DPI_DLLESPEC
+int
+dpi_ret_e_tda(
+    int pos_0,
+    int pos_1);
 
 DPI_LINK_DECL DPI_DLLESPEC
 void
