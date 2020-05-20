@@ -54,6 +54,9 @@ class base_matrix;
     extern virtual function bit [23 : 0]    get_RGB(int x, int y);
     extern virtual function bit             get_image_RGB(ref bit [23 : 0] pixel_rgb);
 
+    extern virtual function bit             set_image_Bayer(bit [7 : 0] Bayer);
+    extern virtual function bit             get_image_Bayer(ref bit [7 : 0] Bayer);
+
     extern virtual task                     find_and_save_gist();
 
     extern virtual task                     cycle_inc();
@@ -153,6 +156,22 @@ function bit base_matrix::set_image_RGB(bit[23 : 0] pixel_rgb);
     return eoi;
 endfunction : set_image_RGB
 
+function bit base_matrix::set_image_Bayer(bit [7 : 0] Bayer);
+    bit eoi = '0;    // end of image
+    bit [23 : 0] pixel_rgb = '0;
+
+    case( { p_y[0] , p_x[0] } )
+        2'b00   :   pixel_rgb[16 -: 8] = Bayer; // G
+        2'b01   :   pixel_rgb[23 -: 8] = Bayer; // R
+        2'b10   :   pixel_rgb[7  -: 8] = Bayer; // B
+        2'b11   :   pixel_rgb[16 -: 8] = Bayer; // G
+    endcase
+
+    eoi = set_image_RGB(pixel_rgb);
+
+    return eoi;
+endfunction : set_image_Bayer
+
 // task for getting image pixel value in RGB format
 function bit [23 : 0] base_matrix::get_RGB(int x, int y);
     return { R[x][y] , G[x][y] , B[x][y] };
@@ -178,6 +197,27 @@ function bit base_matrix::get_image_RGB(ref bit [23 : 0] pixel_rgb);
     end
     return eoi;
 endfunction : get_image_RGB
+
+function bit base_matrix::get_image_Bayer(ref bit [7 : 0] Bayer);
+    bit eoi = '0;    // end of image
+    bit [23 : 0] pixel_rgb;
+    bit p_x_lsb;
+    bit p_y_lsb;
+
+    p_x_lsb = p_x[0];
+    p_y_lsb = p_y[0];
+
+    eoi = get_image_RGB(pixel_rgb);
+
+    case( { p_y_lsb , p_x_lsb } )
+        2'b00   :   Bayer = pixel_rgb[16 -: 8]; // G
+        2'b01   :   Bayer = pixel_rgb[23 -: 8]; // R
+        2'b10   :   Bayer = pixel_rgb[7  -: 8]; // B
+        2'b11   :   Bayer = pixel_rgb[16 -: 8]; // G
+    endcase
+
+    return eoi;
+endfunction : get_image_Bayer
 
 task base_matrix::find_and_save_gist();
     cycle_s.itoa( cycle );

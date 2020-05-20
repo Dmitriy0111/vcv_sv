@@ -11,9 +11,9 @@
 #include <stdio.h>
 #include <string.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb/stb_image.h"
+#include "stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../stb/stb_image_write.h"
+#include "stb/stb_image_write.h"
 
 // image matrix pointer
 unsigned char *image_p;
@@ -74,8 +74,9 @@ int dpi_create_image(int width, int height){
     function for storing RGB matrix to image matrix
 */
 void dpi_store_img(int Width, int Height, svOpenArrayHandle R, svOpenArrayHandle G, svOpenArrayHandle B) {
-    for( int i = 0 ; i < Width ; i++ )
-        for( int j = 0 ; j < Height ; j++ ) {
+    int i,j;
+    for( i = 0 ; i < Width ; i++ )
+        for( j = 0 ; j < Height ; j++ ) {
             image_p[ ( ( i + j * Width ) * 3 ) + 0 ] = *(int**)svGetArrElemPtr(R,i,j);
             image_p[ ( ( i + j * Width ) * 3 ) + 1 ] = *(int**)svGetArrElemPtr(G,i,j);
             image_p[ ( ( i + j * Width ) * 3 ) + 2 ] = *(int**)svGetArrElemPtr(B,i,j);
