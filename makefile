@@ -64,7 +64,7 @@ sim_gui: sim_dir
 # working with stb repository
 
 stb_load:
-	git clone https://github.com/nothings/stb ver_classes/dpi_src/stb
+	git clone https://github.com/nothings/stb
 	
 stb_clean:
 	rm -rfd stb

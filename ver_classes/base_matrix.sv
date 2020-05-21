@@ -161,10 +161,10 @@ function bit base_matrix::set_image_Bayer(bit [7 : 0] Bayer);
     bit [23 : 0] pixel_rgb = '0;
 
     case( { p_y[0] , p_x[0] } )
-        2'b00   :   pixel_rgb[16 -: 8] = Bayer; // G
+        2'b00   :   pixel_rgb[15 -: 8] = Bayer; // G
         2'b01   :   pixel_rgb[23 -: 8] = Bayer; // R
         2'b10   :   pixel_rgb[7  -: 8] = Bayer; // B
-        2'b11   :   pixel_rgb[16 -: 8] = Bayer; // G
+        2'b11   :   pixel_rgb[15 -: 8] = Bayer; // G
     endcase
 
     eoi = set_image_RGB(pixel_rgb);
@@ -210,10 +210,10 @@ function bit base_matrix::get_image_Bayer(ref bit [7 : 0] Bayer);
     eoi = get_image_RGB(pixel_rgb);
 
     case( { p_y_lsb , p_x_lsb } )
-        2'b00   :   Bayer = pixel_rgb[16 -: 8]; // G
+        2'b00   :   Bayer = pixel_rgb[15 -: 8]; // G
         2'b01   :   Bayer = pixel_rgb[23 -: 8]; // R
         2'b10   :   Bayer = pixel_rgb[7  -: 8]; // B
-        2'b11   :   Bayer = pixel_rgb[16 -: 8]; // G
+        2'b11   :   Bayer = pixel_rgb[15 -: 8]; // G
     endcase
 
     return eoi;
