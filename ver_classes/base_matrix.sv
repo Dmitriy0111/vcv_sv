@@ -23,9 +23,9 @@ class base_matrix;
     int                 Width;
     int                 Resolution;
     // Pixel position and counter
-    int                 p_x;
-    int                 p_y;
-    int                 p_c;
+    int                 p_x = 0;
+    int                 p_y = 0;
+    int                 p_c = 0;
     // cycle variable
     int                 cycle;          // Current cycle variable
     bit                 stop_v = '1;    // if '1 then $stop executed
@@ -38,28 +38,28 @@ class base_matrix;
     string              out_format[$];
     string              in_format;
 
-    extern         function                 new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
+    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
 
-    extern virtual task                     create_matrix();
-    extern virtual task                     free_matrix();
+    extern virtual task create_matrix();
+    extern virtual task free_matrix();
 
-    extern virtual function string          path2file(string format);
+    extern virtual function string  path2file(string format);
 
-    extern virtual task                     load_matrix();
-    extern virtual task                     save_matrix();
+    extern virtual task load_matrix();
+    extern virtual task save_matrix();
 
-    extern virtual function void            set_RGB(int x, int y, bit [23 : 0] pixel_rgb);
-    extern virtual function bit             set_image_RGB(bit [23 : 0] pixel_rgb);
+    extern virtual function void    set_RGB(int x, int y, bit [23 : 0] pixel_rgb);
+    extern virtual function bit     set_image_RGB(bit [23 : 0] pixel_rgb);
 
     extern virtual function bit [23 : 0]    get_RGB(int x, int y);
     extern virtual function bit             get_image_RGB(ref bit [23 : 0] pixel_rgb);
 
-    extern virtual function bit             set_image_Bayer(bit [7 : 0] Bayer);
-    extern virtual function bit             get_image_Bayer(ref bit [7 : 0] Bayer);
+    extern virtual function bit set_image_Bayer(bit [7 : 0] Bayer);
+    extern virtual function bit get_image_Bayer(ref bit [7 : 0] Bayer);
 
-    extern virtual task                     find_and_save_gist();
+    extern virtual task find_and_save_gist();
 
-    extern virtual task                     cycle_inc();
+    extern virtual task cycle_inc();
 
 endclass : base_matrix
 
@@ -156,22 +156,6 @@ function bit base_matrix::set_image_RGB(bit[23 : 0] pixel_rgb);
     return eoi;
 endfunction : set_image_RGB
 
-function bit base_matrix::set_image_Bayer(bit [7 : 0] Bayer);
-    bit eoi = '0;    // end of image
-    bit [23 : 0] pixel_rgb = '0;
-
-    case( { p_y[0] , p_x[0] } )
-        2'b00   :   pixel_rgb[15 -: 8] = Bayer; // G
-        2'b01   :   pixel_rgb[23 -: 8] = Bayer; // R
-        2'b10   :   pixel_rgb[7  -: 8] = Bayer; // B
-        2'b11   :   pixel_rgb[15 -: 8] = Bayer; // G
-    endcase
-
-    eoi = set_image_RGB(pixel_rgb);
-
-    return eoi;
-endfunction : set_image_Bayer
-
 // task for getting image pixel value in RGB format
 function bit [23 : 0] base_matrix::get_RGB(int x, int y);
     return { R[x][y] , G[x][y] , B[x][y] };
@@ -198,6 +182,22 @@ function bit base_matrix::get_image_RGB(ref bit [23 : 0] pixel_rgb);
     return eoi;
 endfunction : get_image_RGB
 
+function bit base_matrix::set_image_Bayer( bit [7 : 0] Bayer );
+    bit eoi = '0;    // end of image
+    bit [23 : 0] pixel_rgb = '0;
+
+    case( { p_y[0] , p_x[0] } )
+        2'b00   :   pixel_rgb[15 -: 8] = Bayer; // G
+        2'b01   :   pixel_rgb[23 -: 8] = Bayer; // R
+        2'b10   :   pixel_rgb[7  -: 8] = Bayer; // B
+        2'b11   :   pixel_rgb[15 -: 8] = Bayer; // G
+    endcase
+
+    eoi = set_image_RGB( pixel_rgb );
+
+    return eoi;
+endfunction : set_image_Bayer
+
 function bit base_matrix::get_image_Bayer(ref bit [7 : 0] Bayer);
     bit eoi = '0;    // end of image
     bit [23 : 0] pixel_rgb;
@@ -221,8 +221,8 @@ endfunction : get_image_Bayer
 
 task base_matrix::find_and_save_gist();
     cycle_s.itoa( cycle );
-    gist.find_gist(R,G,B);
-    gist.save_gist(path2folder,image_name,cycle_s);
+    gist.find_gist( R, G, B );
+    gist.save_gist( path2folder, image_name, cycle_s );
 endtask : find_and_save_gist
 
 // increment cycle variable

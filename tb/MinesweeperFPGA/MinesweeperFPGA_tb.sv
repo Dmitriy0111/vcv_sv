@@ -69,12 +69,12 @@ module MinesweeperFPGA_tb;
         case(use_matrix)
             "img_matrix":
             begin
-                img_matrix l_matrix_out = new(800, 528, "../output_images/", "out_image_", , { ".bmp" } );
+                img_matrix l_matrix_out = new( 800, 528, "../output_images/", "out_image_", , { ".bmp" } );
                 matrix_out = l_matrix_out;
             end
             "ppm_matrix":
             begin
-                ppm_matrix l_matrix_out = new(800, 528, "../output_images/", "out_image_", "P3" );
+                ppm_matrix l_matrix_out = new( 800, 528, "../output_images/", "out_image_", "P3" );
                 matrix_out = l_matrix_out;
             end
         endcase
@@ -84,12 +84,12 @@ module MinesweeperFPGA_tb;
     begin
         kb_c.reset_signals();
         @(posedge cycle_bit);
-        repeat($urandom_range(0,200)) @(posedge clk);
-        kb_c.key_toggle(Sp_key);
+        repeat( $urandom_range(0,200) ) @(posedge clk);
+        kb_c.key_toggle( Sp_key );
         @(posedge cycle_bit);
-        kb_c.key_toggle(D_key);
+        kb_c.key_toggle( D_key  );
         @(posedge cycle_bit);
-        kb_c.key_toggle(En_key);
+        kb_c.key_toggle( En_key );
         @(posedge cycle_bit);
         $stop;
     end
@@ -121,7 +121,7 @@ module MinesweeperFPGA_tb;
                     old_time = get_current_time();
                     matrix_out.save_matrix();
                     c_time = get_current_time();
-                    $display("Save time = %d",c_time-old_time);
+                    $display( "Save time = %d", c_time-old_time );
                     cycle_bit = '1;
                 end
             end

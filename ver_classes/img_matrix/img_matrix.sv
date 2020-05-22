@@ -29,11 +29,6 @@ class img_matrix extends base_matrix;
     // tasks and functions
     extern function     new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[]={".jpg"});
 
-    extern task         load_matrix_img();
-
-    extern task         save_matrix_ascii();
-    extern task         load_matrix_ascii();
-
     extern task         save_matrix();
     extern task         load_matrix();
 
@@ -41,78 +36,8 @@ endclass : img_matrix
 
 // class constructor
 function img_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[]={".jpg"});
-    super.new(Width_i,Height_i,path2folder_i,image_name_i,in_format_i,out_format_i);
+    super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
 endfunction : new
-
-// Task for loading matrix data from image file
-task img_matrix::load_matrix_img();
-    int err;
-    int err_cnt = '0;
-    do
-    begin
-        fn = path2file( in_format );
-        err = dpi_open_image( fn, Width, Height );
-        if( err == 1 )
-        begin
-            cycle = '0;
-            err_cnt++;
-            if( err_cnt == 7 )
-            begin
-                $display("Input file opening error! Simulation stop!");
-                $stop;
-            end
-        end
-    end
-    while( err != 0 );
-
-    foreach(R[i,j])
-        dpi_get_pix( ( i + j * Width ) * 3 , R[i][j] , G[i][j] , B[i][j] );
-
-    dpi_free_image();
-endtask : load_matrix_img
-
-// Task for saving matrix data in ascii file
-task img_matrix::save_matrix_ascii();
-    fd = $fopen( fn, "wb" );
-    if( !fd )
-    begin
-        $display("file is not open");
-        $stop;
-    end
-
-    foreach(R[i,j])
-        $fwrite( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
-    $fflush( fd );
-    $fclose( fd );
-    //$stop;
-endtask : save_matrix_ascii
-
-// Task for loading matrix data from ascii file
-task img_matrix::load_matrix_ascii();
-    int err_cnt = '0;
-
-    do
-    begin
-        fn = path2file( in_format );
-        fd = $fopen( fn, "rb" );
-        if( fd == 0 )
-        begin
-            cycle = '0;
-            err_cnt++;
-            if( err_cnt == 7 )
-            begin
-                $display("Input file opening error! Simulation stop!");
-                $stop;
-            end
-        end
-    end
-    while( fd == 0 );
-
-    foreach( R[i,j] )
-        $fscanf( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
-
-    $fclose( fd );
-endtask : load_matrix_ascii
 
 // Task for saving matrix data in file
 task img_matrix::save_matrix();
@@ -140,11 +65,6 @@ task img_matrix::save_matrix();
                 fn = path2file( ".tga" );
                 dpi_save_image_tga( fn, Width, Height );
             end
-            ".txt"  :
-            begin
-                fn = path2file( ".txt" );
-                save_matrix_ascii();
-            end
         endcase
     dpi_free_image();
     cycle_inc();
@@ -152,17 +72,32 @@ endtask : save_matrix
 
 // Task for loading matrix data from file
 task img_matrix::load_matrix();
-    if( in_format == ".txt" )
+    int err;
+    int err_cnt = '0;
+    
+    do
     begin
         fn = path2file( in_format );
-        load_matrix_ascii();
+        err = dpi_open_image( fn, Width, Height );
+        if( err == 1 )
+        begin
+            cycle = '0;
+            err_cnt++;
+            if( err_cnt == 7 )
+            begin
+                $display("Input file opening error! Simulation stop!");
+                $stop;
+            end
+        end
     end
-    else
-    begin
-        fn = path2file( in_format );
-        load_matrix_img();
-    end
-    $display("next image loaded %t ns", $time);
+    while( err != 0 );
+
+    foreach( R[i,j] )
+        dpi_get_pix( ( i + j * Width ) * 3 , R[i][j] , G[i][j] , B[i][j] );
+
+    dpi_free_image();
+
+    $display( "next image loaded %t ns", $time );
     cycle_inc();
 endtask : load_matrix
 

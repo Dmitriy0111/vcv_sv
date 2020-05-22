@@ -33,7 +33,7 @@ sim: sim_gui
 ########################################################
 # simulation - Modelsim
 
-TEST_NAME ?= racing_game_v3_tb
+TEST_NAME ?= test_matrix_tb
 
 VSIM_DIR = $(PWD)/sim_modelsim
 
@@ -64,7 +64,7 @@ sim_gui: sim_dir
 # working with stb repository
 
 stb_load:
-	git clone https://github.com/nothings/stb
+	git clone https://github.com/nothings/stb ver_classes/dpi_src/stb
 	
 stb_clean:
 	rm -rfd stb

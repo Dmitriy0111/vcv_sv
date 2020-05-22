@@ -14,8 +14,6 @@
 
 class ppm_matrix extends base_matrix;
 
-    string  ppm_format = "P3";
-
     extern function     new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[]={"P3"});
 
     extern task         load_matrix();
@@ -25,8 +23,7 @@ endclass : ppm_matrix
 
 // class constructor
 function ppm_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[]={"P3"});
-    super.new(Width_i,Height_i,path2folder_i,image_name_i,in_format_i,out_format_i);
-    ppm_format = in_format_i;
+    super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
 endfunction : new
 
 task ppm_matrix::load_matrix();
@@ -52,24 +49,24 @@ task ppm_matrix::load_matrix();
     end
     while( fd == 0 );
 
-    $fscanf(fd,"%s",ppm_format);
+    $fscanf( fd, "%s", in_format );
     
     repeat(2)
-        while($fgetc(fd) != 'h0a);
+        while( $fgetc(fd) != 'h0a );
 
-    $fscanf(fd, "%d %d", H, W);
+    $fscanf( fd, "%d %d", H, W );
     
-    $fscanf(fd, "%d", max_v);
+    $fscanf( fd, "%d", max_v );
 
-    if( ppm_format == "P3" )
-        for(int j = 0; j < Height ; j++)
-            for(int i = 0; i < Width ; i++)
+    if( in_format == "P3" )
+        for( int j = 0 ; j < Height ; j++ )
+            for( int i = 0 ; i < Width ; i++ )
                 $fscanf( fd, "%d %d %d", R[i][j], G[i][j], B[i][j] );
     else
     begin
-        $fgetc(fd);
-        for(int j = 0; j < Height ; j++)
-            for(int i = 0; i < Width ; i++)
+        $fgetc( fd );
+        for( int j = 0 ; j < Height ; j++ )
+            for( int i = 0 ; i < Width ; i++ )
                 $fscanf( fd, "%c%c%c", R[i][j], G[i][j],B[i][j] );
     end
 
@@ -79,27 +76,27 @@ endtask : load_matrix
 
 task ppm_matrix::save_matrix();
 
-    fn = path2file(".ppm");
+    fn = path2file( ".ppm" );
 
     fd = $fopen( fn, "wb" );
 
     if( !fd )
     begin
-        $display("file is not open");
+        $display( "file is not open" );
         $stop;
     end
     
-    $fwrite(fd, { ppm_format , "\n# ppm_matrix file\n" } );
-    $fwrite(fd, "%d %d\n255\n", Width, Height);
+    $fwrite(fd, { out_format[0] , "\n# ppm_matrix file\n" } );
+    $fwrite( fd, "%d %d\n255\n", Width, Height );
     
-    if( ppm_format == "P3" )
-        for(int j = 0; j < Height ; j++)
-            for(int i = 0; i < Width ; i++)
-                $fwrite(fd, "%d %d %d\n", R[i][j], G[i][j], B[i][j]);
+    if( out_format[0] == "P3" )
+        for( int j = 0 ; j < Height ; j++ )
+            for( int i = 0 ; i < Width ; i++ )
+                $fwrite( fd, "%d %d %d\n", R[i][j], G[i][j], B[i][j] );
     else
-        for(int j = 0; j < Height ; j++)
-            for(int i = 0; i < Width ; i++)
-                $fwrite(fd, "%c%c%c", R[i][j], G[i][j], B[i][j]);
+        for( int j = 0 ; j < Height ; j++ )
+            for( int i = 0 ; i < Width ; i++ )
+                $fwrite( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
 
     $fflush( fd );
     $fclose( fd );

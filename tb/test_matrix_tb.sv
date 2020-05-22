@@ -36,18 +36,18 @@ module test_matrix_tb;
 
     initial
     begin
-        case(use_matrix)
+        case( use_matrix )
             "img_matrix":
             begin
-                img_matrix l_matrix_in  = new(1024, 768, "../input_images/", "in_image_", ".jpg", {".jpg"});
-                img_matrix l_matrix_out = new(1024, 768, "../output_images/", "out_image_", ".jpg", {".jpg"});
+                img_matrix l_matrix_in  = new( 1024, 768, "../input_images/", "in_image_", ".jpg", {".jpg"} );
+                img_matrix l_matrix_out = new( 1024, 768, "../output_images/", "out_image_", ".jpg", {".jpg"} );
                 matrix_in = l_matrix_in;
                 matrix_out = l_matrix_out;
             end
             "ppm_matrix":
             begin
-                ppm_matrix l_matrix_in  = new(1024, 768, "../input_images/", "in_image_","P3");
-                ppm_matrix l_matrix_out = new(1024, 768, "../output_images/", "out_image_","P3");
+                ppm_matrix l_matrix_in  = new( 1024, 768, "../input_images/", "in_image_", "P3", {"P3"} );
+                ppm_matrix l_matrix_out = new( 1024, 768, "../output_images/", "out_image_", "P3", {"P3"} );
                 matrix_in = l_matrix_in;
                 matrix_out = l_matrix_out;
             end
@@ -66,14 +66,14 @@ module test_matrix_tb;
         forever
         begin
             @(posedge clk);
-            if( matrix_in.get_image_RGB(rgb) )
+            if( matrix_in.get_image_RGB( rgb ) )
             begin
                 old_time = get_current_time();
                 matrix_in.load_matrix();
                 c_time = get_current_time();
                 load_time += c_time-old_time;
                 matrix_in.find_and_save_gist();
-                $display("Load time %d",c_time-old_time);
+                $display( "Load time %d", c_time-old_time );
             end
             if( matrix_out.set_image_RGB(~rgb) )
             begin
@@ -82,12 +82,12 @@ module test_matrix_tb;
                 matrix_out.save_matrix();
                 c_time = get_current_time();
                 save_time += c_time-old_time;
-                $display("Save time %d",c_time-old_time);
+                $display( "Save time %d", c_time-old_time );
                 rep_cycles++;
                 if( rep_cycles == rep_c )
                 begin
-                    $display("Total save time = %d, total load time = %d", load_time, save_time);
-                    $display("Save time = %d, load time = %d", load_time/rep_c, save_time/rep_c);
+                    $display( "Total save time = %d, total load time = %d", load_time, save_time );
+                    $display( "Save time = %d, load time = %d", load_time/rep_c, save_time/rep_c );
                     $stop;
                 end
             end
