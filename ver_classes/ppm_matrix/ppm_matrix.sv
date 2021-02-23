@@ -31,6 +31,7 @@ task ppm_matrix::load_matrix();
     int H,W;
     int max_v;
     int err_cnt = '0;
+    logic [7 : 0] R_int, G_int, B_int;
 
     do
     begin
@@ -61,7 +62,10 @@ task ppm_matrix::load_matrix();
     if( in_format == "P3" )
         for( int j = 0 ; j < Height ; j++ )
             for( int i = 0 ; i < Width ; i++ )
-                $fscanf( fd, "%d %d %d", R[i][j], G[i][j], B[i][j] );
+				begin					
+					$fscanf( fd, "%d %d %d", R_int, G_int, B_int );  
+                	R[i][j] = R_int; G[i][j] = G_int; B[i][j] = B_int;  
+				end
     else
     begin
         $fgetc( fd );

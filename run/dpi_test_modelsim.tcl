@@ -7,6 +7,8 @@
 # Copyright(c)    :   2019-2020 Vlasov D.V
 #
 
+vlib work
+
 set test    "dpi_test"
 
 vlog -sv -dpiheader ../dpi_examples/dpi_test.h ../dpi_examples/dpi_test.sv ../dpi_examples/dpi_test.c

@@ -40,7 +40,7 @@ class base_matrix;
 
     extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
 
-    extern virtual task create_matrix();
+    extern virtual function void create_matrix();
     extern virtual task free_matrix();
 
     extern virtual function string  path2file(string format);
@@ -88,7 +88,7 @@ function base_matrix::new(int Width_i, int Height_i, string path2folder_i, strin
     
 endfunction : new
 
-task base_matrix::create_matrix();
+function void base_matrix::create_matrix();
     // creating one-dimensional array
     R = new [Width];
     G = new [Width];
@@ -100,7 +100,7 @@ task base_matrix::create_matrix();
         G[i] = new [Height];
     foreach( B[i] )
         B[i] = new [Height];
-endtask : create_matrix
+endfunction : create_matrix
 
 task base_matrix::free_matrix();
     R.delete();

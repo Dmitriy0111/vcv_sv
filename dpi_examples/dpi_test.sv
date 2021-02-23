@@ -18,15 +18,6 @@ import "DPI-C" function void  dpi_get_tda(output int arr[][], input int size_0, 
 import "DPI-C" function void dpi_set_tda(int arr[][], int size_0, int size_1);
 import "DPI-C" function int  dpi_comp_arr(int arr[][], int size_0, int size_1);
 
-export "DPI-C" function reverse_byte;
-
-function int reverse_byte(int in_b);
-    byte out_b;
-    for(int i = 0;i<8;i++)
-        out_b[i] = in_b[7-i];
-    return out_b;
-endfunction : reverse_byte
-
 module dpi_test;
 
     timeunit            1ns;
@@ -38,8 +29,8 @@ module dpi_test;
 
     initial
     begin
-        dpi_get_dv(size_0);
-        dpi_get_dv(size_1);
+        // dpi_get_dv(size_0);
+        // dpi_get_dv(size_1);
         $display("size_0 = %4d, size_1 = %4d", size_0, size_1);
         $display("Creating SystemVerilog two dimentional array");
         tda = new [size_0];

@@ -9,6 +9,7 @@
 
 #include "../dpi_h/dpiheader.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"

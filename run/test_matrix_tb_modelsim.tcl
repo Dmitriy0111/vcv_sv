@@ -7,6 +7,8 @@
 # Copyright(c)    :   2019-2020 Vlasov D.V
 #
 
+vlib work
+
 set test    "test_matrix_tb"
 
 set i0 +incdir+../ver_classes/pkg

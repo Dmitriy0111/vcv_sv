@@ -17,7 +17,7 @@ module test_matrix_tb;
     parameter           T = 10,
                         rst_delay = 7,
                         rep_c = 100,
-                        use_matrix = "ppm_matrix";
+                        use_matrix = "img_matrix";
 
     bit     [0  : 0]    clk;        // clock
     bit     [23 : 0]    rgb;
@@ -33,7 +33,7 @@ module test_matrix_tb;
     base_matrix matrix_in;
 
     base_matrix matrix_out;
-
+//C:/Users/Dmitriy/Desktop/vcv_sv/input_images
     initial
     begin
         case( use_matrix )
@@ -68,26 +68,26 @@ module test_matrix_tb;
             @(posedge clk);
             if( matrix_in.get_image_RGB( rgb ) )
             begin
-                old_time = get_current_time();
+                //old_time = get_current_time();
                 matrix_in.load_matrix();
-                c_time = get_current_time();
-                load_time += c_time-old_time;
+                //c_time = get_current_time();
+                //load_time += c_time-old_time;
                 matrix_in.find_and_save_gist();
-                $display( "Load time %d", c_time-old_time );
+                //$display( "Load time %d", c_time-old_time );
             end
             if( matrix_out.set_image_RGB(~rgb) )
             begin
                 matrix_out.find_and_save_gist();
-                old_time = get_current_time();
+                //old_time = get_current_time();
                 matrix_out.save_matrix();
-                c_time = get_current_time();
-                save_time += c_time-old_time;
-                $display( "Save time %d", c_time-old_time );
+                //c_time = get_current_time();
+                //save_time += c_time-old_time;
+                //$display( "Save time %d", c_time-old_time );
                 rep_cycles++;
                 if( rep_cycles == rep_c )
                 begin
-                    $display( "Total save time = %d, total load time = %d", load_time, save_time );
-                    $display( "Save time = %d, load time = %d", load_time/rep_c, save_time/rep_c );
+                    //$display( "Total save time = %d, total load time = %d", load_time, save_time );
+                    //$display( "Save time = %d, load time = %d", load_time/rep_c, save_time/rep_c );
                     $stop;
                 end
             end
