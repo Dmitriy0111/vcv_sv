@@ -4,7 +4,7 @@
 *  Data            :   13.05.2020
 *  Language        :   SystemVerilog
 *  Description     :   This is base matrix class
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 `ifndef BASE_MATRIX__SV

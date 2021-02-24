@@ -4,7 +4,7 @@
 *  Data            :   13.05.2020
 *  Language        :   SystemVerilog
 *  Description     :   This is testbench file for racing_game wrapper for 8bitworkshop
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 module racing_game_v3_tb;

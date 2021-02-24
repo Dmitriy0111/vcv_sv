@@ -4,7 +4,7 @@
 *  Data            :   12.05.2020
 *  Language        :   SystemVerilog
 *  Description     :   This is class for working with ppm image format file
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 `ifndef PPM_MATRIX__SV

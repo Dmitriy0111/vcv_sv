@@ -4,7 +4,7 @@
 *  Data            :   12.05.2020
 *  Language        :   SystemVerilog
 *  Description     :   This is testbench for working with DPI
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 import "DPI-C" function void dpi_get_dv(output int val);

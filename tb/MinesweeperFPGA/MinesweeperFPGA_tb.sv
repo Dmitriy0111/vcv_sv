@@ -4,7 +4,7 @@
 *  Data            :   13.05.2020
 *  Language        :   SystemVerilog
 *  Description     :   This is testbench file for MinesweeperFPGA with ppm matrix file
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 module MinesweeperFPGA_tb;

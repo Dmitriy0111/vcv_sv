@@ -4,7 +4,7 @@
 *  Data            :   15.05.2020
 *  Language        :   SystemVerilog
 *  Description     :   This is keyboard class
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 `ifndef KEYBOARD_C__SV

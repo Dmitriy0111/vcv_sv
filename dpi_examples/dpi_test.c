@@ -4,7 +4,7 @@
 *  Data            :   12.05.2020
 *  Language        :   C
 *  Description     :   This dpi functions
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 #include "dpi_test.h"

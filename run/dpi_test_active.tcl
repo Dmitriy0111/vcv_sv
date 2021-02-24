@@ -1,10 +1,10 @@
 #
 # File            :   dpi_test.tcl
 # Autor           :   Vlasov D.V
-# Data            :   12.05.2020
+# Data            :   23.02.2020
 # Language        :   TCL
 # Description     :   This is script for running dpi example test
-# Copyright(c)    :   2019-2020 Vlasov D.V
+# Copyright(c)    :   2019-2021 Vlasov D.V
 #
 
 workspace create w_sim

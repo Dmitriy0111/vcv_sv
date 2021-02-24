@@ -4,7 +4,7 @@
 # Data            :   01.06.2019
 # Language        :   TCL
 # Description     :   This is script for running ppm or img matrix testbench
-# Copyright(c)    :   2019-2020 Vlasov D.V
+# Copyright(c)    :   2019-2021 Vlasov D.V
 #
 
 vlib work

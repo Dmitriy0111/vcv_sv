@@ -4,7 +4,7 @@
 *  Data            :   01.06.2019
 *  Language        :   C
 *  Description     :   This image dpi functions
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 #include "../dpi_h/dpiheader.h"

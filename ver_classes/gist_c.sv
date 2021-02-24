@@ -4,7 +4,7 @@
 *  Data            :   13.05.2020
 *  Language        :   SystemVerilog
 *  Description     :   This is test matrix file for testing video ip cores
-*  Copyright(c)    :   2019-2020 Vlasov D.V
+*  Copyright(c)    :   2019-2021 Vlasov D.V
 */
 
 `timescale 1ns/100ps

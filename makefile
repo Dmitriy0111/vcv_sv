@@ -34,7 +34,7 @@ sim: sim_gui
 ########################################################
 # simulation - Modelsim
 
-TEST_NAME ?= test_matrix_tb_active
+TEST_NAME ?= test_matrix_tb
 
 SIM_NAME ?= Modelsim
 
@@ -52,9 +52,9 @@ endif
 
 VSIM_DIR = $(PWD)/sim_modelsim
 
-VLIB_BIN = cd $(VSIM_DIR) && $(PATH2SIM)/vlib
-VLOG_BIN = cd $(VSIM_DIR) && $(PATH2SIM)/vlog
-VSIM_BIN = cd $(VSIM_DIR) && $(PATH2SIM)/vsim
+VLIB_BIN = cd $(VSIM_DIR) && "$(PATH2SIM)/vlib"
+VLOG_BIN = cd $(VSIM_DIR) && "$(PATH2SIM)/vlog"
+VSIM_BIN = cd $(VSIM_DIR) && "$(PATH2SIM)/vsim"
 
 VSIM_OPT_COMMON += -do $(RUN_DIR)/$(TEST_NAME)$(SUB_TEST_NAME).tcl
 
@@ -75,14 +75,14 @@ sim_cmd: sim_dir
 sim_gui: sim_dir
 	$(VSIM_BIN) $(VSIM_OPT_COMMON) $(VSIM_OPT_GUI) &
 
-PATH2ACTIVE_HDL ?= D:\lscc\diamond\3.11_x64\active-hdl
-
+########################################################
+# compile dpi lib for working with Active-HDL
 comp_dpi_vcv_lib:
 	mkdir -p dpi_vcv_lib
 	gcc -shared -Bsymbolic \
-	-I$(PATH2ACTIVE_HDL)\PLI\Include \
-	-L$(PATH2ACTIVE_HDL)\PLI\Lib \
-	-L$(PATH2ACTIVE_HDL)\BIN \
+	-I$(PATH2ACTIVE_HDL)\..\PLI\Include \
+	-L$(PATH2ACTIVE_HDL)\..\PLI\Lib \
+	-L$(PATH2ACTIVE_HDL)\..\BIN \
 	-Iver_classes\dpi_h \
 	-lsvdpi_exp \
 	-l:svdpi_exp.dll \
@@ -98,9 +98,9 @@ clean_dpi_vcv_lib:
 comp_dpi_lib:
 	mkdir -p dpi_lib
 	gcc -shared -Bsymbolic \
-	-I$(PATH2ACTIVE_HDL)\PLI\Include \
-	-L$(PATH2ACTIVE_HDL)\PLI\Lib \
-	-L$(PATH2ACTIVE_HDL)\BIN \
+	-I$(PATH2ACTIVE_HDL)\..\PLI\Include \
+	-L$(PATH2ACTIVE_HDL)\..\PLI\Lib \
+	-L$(PATH2ACTIVE_HDL)\..\BIN \
 	-Idpi_examples \
 	-lsvdpi_exp \
 	-l:svdpi_exp.dll \
@@ -111,6 +111,9 @@ comp_dpi_lib:
 
 clean_dpi_lib:
 	rm -rfd dpi_lib
+
+comp_:
+	gcc -shared -Bsymbolic -ID:/Programs/modeltech64_10.5/include -LD:/Programs/modeltech64_10.5/win64 -lmtipli -l:mtipli.dll  -o dpi_test.dll dpi_examples/dpi_test.c
 
 ########################################################
 # working with stb repository
