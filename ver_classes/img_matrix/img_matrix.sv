@@ -27,15 +27,17 @@ import "DPI-C" function void dpi_save_image_tga(input string path, input int wid
 class img_matrix extends base_matrix;
 
     // tasks and functions
-    extern function     new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[]={".jpg"});
+    extern function     new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[] = {".jpg"});
 
     extern task         save_matrix();
     extern task         load_matrix();
 
+    extern static function img_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[] = {".jpg"});
+
 endclass : img_matrix
 
 // class constructor
-function img_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[]={".jpg"});
+function img_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[] = {".jpg"});
     super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
 endfunction : new
 
@@ -100,5 +102,10 @@ task img_matrix::load_matrix();
     $display( "next image loaded %t ns", $time );
     cycle_inc();
 endtask : load_matrix
+
+static function img_matrix img_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[] = {".jpg"});
+    img_matrix ret_matrix = new(Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i);
+    return ret_matrix;
+endfunction : create
 
 `endif // IMG_MATRIX__SV

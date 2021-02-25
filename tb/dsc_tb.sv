@@ -78,16 +78,8 @@ module dsc_tb;
     initial
     begin
         case(use_matrix)
-            "img_matrix":
-            begin
-                img_matrix l_matrix_out = new(800, 525, "../output_images/", "out_image_");
-                matrix_out = l_matrix_out;
-            end
-            "ppm_matrix":
-            begin
-                ppm_matrix l_matrix_out = new(800, 525, "../output_images/", "out_image_");
-                matrix_out = l_matrix_out;
-            end
+            "img_matrix":   matrix_out = img_matrix::create( 800, 525, "../output_images/", "out_image_");
+            "ppm_matrix":   matrix_out = ppm_matrix::create( 800, 525, "../output_images/", "out_image_");
         endcase
     end
     // working with output matrix

@@ -17,7 +17,7 @@ module test_matrix_tb;
     parameter           T = 10,
                         rst_delay = 7,
                         rep_c = 100,
-                        use_matrix = "ppm_matrix";
+                        use_matrix = "img_matrix";
 
     bit     [0  : 0]    clk;        // clock
     bit     [23 : 0]    rgb;
@@ -39,17 +39,13 @@ module test_matrix_tb;
         case( use_matrix )
             "img_matrix":
             begin
-                img_matrix l_matrix_in  = new( 1024, 768, "../input_images/", "in_image_", ".jpg", {".jpg"} );
-                img_matrix l_matrix_out = new( 1024, 768, "../output_images/", "out_image_", ".jpg", {".jpg"} );
-                matrix_in = l_matrix_in;
-                matrix_out = l_matrix_out;
+                matrix_in  = img_matrix::create( 1024, 768, "../input_images/", "in_image_", ".jpg", {".jpg"} );
+                matrix_out = img_matrix::create( 1024, 768, "../output_images/", "out_image_", ".jpg", {".jpg"} );
             end
             "ppm_matrix":
             begin
-                ppm_matrix l_matrix_in  = new( 1024, 768, "../../input_images/", "in_image_", "P3", {"P3"} );
-                ppm_matrix l_matrix_out = new( 1024, 768, "../../output_images/", "out_image_", "P3", {"P3"} );
-                matrix_in = l_matrix_in;
-                matrix_out = l_matrix_out;
+                matrix_in  = ppm_matrix::create( 1024, 768, "../input_images/", "in_image_", "P3", {"P3"} );
+                matrix_out = ppm_matrix::create( 1024, 768, "../output_images/", "out_image_", "P3", {"P3"} );
             end
         endcase
         matrix_in.load_matrix();

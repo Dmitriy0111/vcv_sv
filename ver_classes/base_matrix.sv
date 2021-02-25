@@ -61,6 +61,8 @@ class base_matrix;
 
     extern virtual task cycle_inc();
 
+    extern virtual task reset_pos();
+
 endclass : base_matrix
 
 // class constructor
@@ -229,5 +231,11 @@ endtask : find_and_save_gist
 task base_matrix::cycle_inc();
     this.cycle++;
 endtask : cycle_inc
+
+task base_matrix::reset_pos();
+    p_x = 0;
+    p_y = 0;
+    p_c = 0;
+endtask : reset_pos
 
 `endif // BASE_MATRIX__SV

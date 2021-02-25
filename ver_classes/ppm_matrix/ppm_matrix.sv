@@ -14,15 +14,17 @@
 
 class ppm_matrix extends base_matrix;
 
-    extern function     new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[]={"P3"});
+    extern function     new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
 
     extern task         load_matrix();
     extern task         save_matrix();
 
+    extern static function ppm_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
+
 endclass : ppm_matrix
 
 // class constructor
-function ppm_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[]={"P3"});
+function ppm_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
     super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
 endfunction : new
 
@@ -108,5 +110,10 @@ task ppm_matrix::save_matrix();
     cycle++;
 
 endtask : save_matrix
+
+static function ppm_matrix ppm_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
+    ppm_matrix ret_matrix = new(Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i);
+    return ret_matrix;
+endfunction : create
 
 `endif // PPM_MATRIX__SV
