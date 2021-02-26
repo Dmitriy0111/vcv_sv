@@ -15,5 +15,6 @@ package work_pkg;
     `include    "../base_matrix.sv"
     `include    "../ppm_matrix/ppm_matrix.sv"
     `include    "../img_matrix/img_matrix.sv"
+    `include    "../pat_matrix/pat_matrix.sv"
     
 endpackage : work_pkg

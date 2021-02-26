@@ -16,8 +16,19 @@ module test_matrix_tb;
 
     parameter           T = 10,
                         rst_delay = 7,
-                        rep_c = 100,
-                        use_matrix = "img_matrix";
+                        rep_c = 100;
+                        
+    parameter           width_i = 1024,
+                        height_i = 768,
+                        path2folder_i = "../input_images/",
+                        matrix_name_i = "in_image_",
+                        use_matrix_i = "pat_matrix";
+
+    parameter           width_o = 1024,
+                        height_o = 768,
+                        path2folder_o = "../output_images/",
+                        matrix_name_o = "out_image_",
+                        use_matrix_o = "img_matrix";
 
     bit     [0  : 0]    clk;        // clock
     bit     [23 : 0]    rgb;
@@ -36,19 +47,22 @@ module test_matrix_tb;
 
     initial
     begin
-        case( use_matrix )
-            "img_matrix":
-            begin
-                matrix_in  = img_matrix::create( 1024, 768, "../input_images/", "in_image_", ".jpg", {".jpg"} );
-                matrix_out = img_matrix::create( 1024, 768, "../output_images/", "out_image_", ".jpg", {".jpg"} );
-            end
-            "ppm_matrix":
-            begin
-                matrix_in  = ppm_matrix::create( 1024, 768, "../input_images/", "in_image_", "P3", {"P3"} );
-                matrix_out = ppm_matrix::create( 1024, 768, "../output_images/", "out_image_", "P3", {"P3"} );
-            end
+        case( use_matrix_i )
+            "img_matrix"    : matrix_in = img_matrix::create( width_i, height_i, path2folder_i, matrix_name_i, ".jpg", {".jpg"} );
+            "ppm_matrix"    : matrix_in = ppm_matrix::create( width_i, height_i, path2folder_i, matrix_name_i, "P3", {"P3"} );
+            "pat_matrix"    : matrix_in = pat_matrix::create( width_i, height_i, path2folder_i, matrix_name_i, "Archimed", );
+            default         : $fatal();
         endcase
         matrix_in.load_matrix();
+    end
+
+    initial
+    begin
+        case( use_matrix_o )
+            "img_matrix"    : matrix_out = img_matrix::create( width_o, height_o, path2folder_o, matrix_name_o, ".jpg", {".jpg"} );
+            "ppm_matrix"    : matrix_out = ppm_matrix::create( width_o, height_o, path2folder_o, matrix_name_o, "P3", {"P3"} );
+            default         : $fatal();
+        endcase
     end
     // generate clock
     initial 
@@ -71,7 +85,7 @@ module test_matrix_tb;
                 matrix_in.find_and_save_gist();
                 $display( "Load time %d", c_time-old_time );
             end
-            if( matrix_out.set_image_RGB(~rgb) )
+            if( matrix_out.set_image_RGB( ~rgb ) )
             begin
                 matrix_out.find_and_save_gist();
                 old_time = get_current_time();

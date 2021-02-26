@@ -29,8 +29,8 @@ module dpi_test;
 
     initial
     begin
-        // dpi_get_dv(size_0);
-        // dpi_get_dv(size_1);
+        dpi_get_dv(size_0);
+        dpi_get_dv(size_1);
         $display("size_0 = %4d, size_1 = %4d", size_0, size_1);
         $display("Creating SystemVerilog two dimentional array");
         tda = new [size_0];

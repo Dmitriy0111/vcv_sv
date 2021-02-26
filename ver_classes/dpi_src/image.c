@@ -21,7 +21,7 @@ unsigned char *image_p;
 /*
     function for opening  image file
 */
-int dpi_open_image(const char* path, int width, int height){
+int dpi_open_image(const char* path, int width, int height) {
     int channels = 3;
     image_p = stbi_load (
                             path,
@@ -43,7 +43,7 @@ int dpi_open_image(const char* path, int width, int height){
 /*
     function for getting pixel from image
 */
-int dpi_get_pix(int pix_pos, unsigned int * R, unsigned int * G, unsigned int * B){
+int dpi_get_pix(int pix_pos, unsigned int * R, unsigned int * G, unsigned int * B) {
     if(image_p == NULL) {
         vpi_printf("[ Error ] Input image is NULL\n");
         return 0;
@@ -56,14 +56,14 @@ int dpi_get_pix(int pix_pos, unsigned int * R, unsigned int * G, unsigned int * 
 /*
     function for closing image matrix
 */
-int dpi_free_image(){
+int dpi_free_image() {
     stbi_image_free(image_p);
     return 1;
 }
 /*
     function for creating image matrix
 */
-int dpi_create_image(int width, int height){
+int dpi_create_image(int width, int height) {
     image_p = (unsigned char *) malloc(sizeof(unsigned char ) * (width*height*3));
     if(image_p == NULL) {
         vpi_printf("[ Error ] : Creating image array is not successful.\n");

@@ -10,20 +10,19 @@
 `ifndef PPM_MATRIX__SV
 `define PPM_MATRIX__SV
 
-`timescale 1ns/100ps
+`timescale 1ps/1ps
 
 class ppm_matrix extends base_matrix;
 
-    extern function     new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
+    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
 
-    extern task         load_matrix();
-    extern task         save_matrix();
+    extern task load_matrix();
+    extern task save_matrix();
 
     extern static function ppm_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
 
 endclass : ppm_matrix
 
-// class constructor
 function ppm_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
     super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
 endfunction : new
@@ -44,10 +43,7 @@ task ppm_matrix::load_matrix();
             cycle = '0;
             err_cnt++;
             if( err_cnt == 7 )
-            begin
-                $display("Input file opening error! Simulation stop!");
-                $stop;
-            end
+                $fatal("Input file opening error! Simulation stop!");
         end
     end
     while( fd == 0 );
@@ -57,7 +53,15 @@ task ppm_matrix::load_matrix();
     repeat(2)
         while( $fgetc(fd) != 'h0a );
 
-    $fscanf( fd, "%d %d", H, W );
+    $fscanf( fd, "%d %d", W, H );
+
+    if( ( W != Width ) || ( H != Height ) )
+    begin
+        Width = W;
+        Height = H;
+        free_matrix();
+        create_matrix();
+    end
     
     $fscanf( fd, "%d", max_v );
 
@@ -68,13 +72,15 @@ task ppm_matrix::load_matrix();
 					$fscanf( fd, "%d %d %d", R_int, G_int, B_int );  
                 	R[i][j] = R_int; G[i][j] = G_int; B[i][j] = B_int;  
 				end
-    else
+    else if( in_format == "P6" )
     begin
         $fgetc( fd );
         for( int j = 0 ; j < Height ; j++ )
             for( int i = 0 ; i < Width ; i++ )
-                $fscanf( fd, "%c%c%c", R[i][j], G[i][j],B[i][j] );
+                $fscanf( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
     end
+    else
+        $fatal("Unexpected PPM format!");
 
     $fclose( fd );
 
@@ -92,26 +98,28 @@ task ppm_matrix::save_matrix();
         $stop;
     end
     
-    $fwrite(fd, { out_format[0] , "\n# ppm_matrix file\n" } );
+    $fwrite( fd, { out_format[0] , "\n# ppm_matrix file\n" } );
     $fwrite( fd, "%d %d\n255\n", Width, Height );
     
     if( out_format[0] == "P3" )
         for( int j = 0 ; j < Height ; j++ )
             for( int i = 0 ; i < Width ; i++ )
                 $fwrite( fd, "%d %d %d\n", R[i][j], G[i][j], B[i][j] );
-    else
+    else if( out_format[0] == "P6" )
         for( int j = 0 ; j < Height ; j++ )
             for( int i = 0 ; i < Width ; i++ )
                 $fwrite( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
+    else
+        $fatal("Unexpected PPM format!");
 
     $fflush( fd );
     $fclose( fd );
 
-    cycle++;
-
+    $display( "next image loaded at time %tps", $time );
+    cycle_inc();
 endtask : save_matrix
 
-static function ppm_matrix ppm_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
+function ppm_matrix ppm_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
     ppm_matrix ret_matrix = new(Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i);
     return ret_matrix;
 endfunction : create

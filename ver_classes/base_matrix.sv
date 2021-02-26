@@ -10,6 +10,8 @@
 `ifndef BASE_MATRIX__SV
 `define BASE_MATRIX__SV
 
+`timescale 1ps/1ps
+
 class base_matrix;
 
     gist_c              gist = new();
@@ -28,7 +30,6 @@ class base_matrix;
     int                 p_c = 0;
     // cycle variable
     int                 cycle;          // Current cycle variable
-    bit                 stop_v = '1;    // if '1 then $stop executed
     // variable's for working with files
     int                 fd;             // file descriptor
     string              path2folder;    // path to folder with storing/loading images
@@ -40,22 +41,32 @@ class base_matrix;
 
     extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
 
+    extern virtual function int get_width();
+    extern virtual function int get_height();
+
+    extern virtual task set_width(int Width_i);
+    extern virtual task set_height(int Height_i);
+
     extern virtual function void create_matrix();
     extern virtual task free_matrix();
 
-    extern virtual function string  path2file(string format);
+    extern virtual function string path2file(string format);
 
     extern virtual task load_matrix();
     extern virtual task save_matrix();
 
-    extern virtual function void    set_RGB(int x, int y, bit [23 : 0] pixel_rgb);
-    extern virtual function bit     set_image_RGB(bit [23 : 0] pixel_rgb);
+    extern virtual function void set_RGB(int x, int y, bit [23 : 0] pixel_rgb);
+    extern virtual function bit  set_image_RGB(bit [23 : 0] pixel_rgb);
 
-    extern virtual function bit [23 : 0]    get_RGB(int x, int y);
-    extern virtual function bit             get_image_RGB(ref bit [23 : 0] pixel_rgb);
+    extern virtual function bit [23 : 0] get_RGB(int x, int y);
+    extern virtual function bit          get_image_RGB(ref bit [23 : 0] pixel_rgb);
 
     extern virtual function bit set_image_Bayer(bit [7 : 0] Bayer);
     extern virtual function bit get_image_Bayer(ref bit [7 : 0] Bayer);
+
+    extern virtual task copy_arrays(base_matrix oth_matrix);
+
+    extern virtual task mix_arrays(base_matrix oth_matrix);
 
     extern virtual task find_and_save_gist();
 
@@ -65,7 +76,6 @@ class base_matrix;
 
 endclass : base_matrix
 
-// class constructor
 function base_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
     Height = Height_i;
     Width  = Width_i; 
@@ -77,7 +87,6 @@ function base_matrix::new(int Width_i, int Height_i, string path2folder_i, strin
         out_format.push_back( out_format_i[i] );
 
     this.create_matrix();
-
     // reset pixel position and counter
     p_x = '0;
     p_y = '0;
@@ -87,8 +96,23 @@ function base_matrix::new(int Width_i, int Height_i, string path2folder_i, strin
     // init help variables
     path2folder = path2folder_i;
     image_name = image_name_i;
-    
 endfunction : new
+
+function int base_matrix::get_width();
+    return this.Width;
+endfunction : get_width
+
+function int base_matrix::get_height();
+    return this.Height;
+endfunction : get_height
+
+task base_matrix::set_width(int Width_i);
+    this.Width = Width;
+endtask : set_width
+
+task base_matrix::set_height(int Height_i);
+    this.Height = Height_i;
+endtask : set_height
 
 function void base_matrix::create_matrix();
     // creating one-dimensional array
@@ -122,9 +146,11 @@ function string base_matrix::path2file(string format);
 endfunction : path2file
 
 task base_matrix::load_matrix();
+    $fatal("Base class task called!");
 endtask : load_matrix
 
 task base_matrix::save_matrix();
+    $fatal("Base class task called!");
 endtask : save_matrix
 
 // task for setting image pixel value in RGB format
@@ -152,7 +178,7 @@ function bit base_matrix::set_image_RGB(bit[23 : 0] pixel_rgb);
         p_x = '0;
         p_y = '0;
         p_c = '0;
-        $display("Image received at %t ns", $time);
+        $display("Image received at %tps", $time);
     end
 
     return eoi;
@@ -221,13 +247,40 @@ function bit base_matrix::get_image_Bayer(ref bit [7 : 0] Bayer);
     return eoi;
 endfunction : get_image_Bayer
 
+task base_matrix::copy_arrays(base_matrix oth_matrix);
+    if( ( oth_matrix.Width == this.Width ) && ( oth_matrix.Height == this.Height ) )
+    begin
+        foreach(R[i,j])
+        begin
+            this.R[i][j] = oth_matrix.R[i][j];
+            this.G[i][j] = oth_matrix.G[i][j];
+            this.B[i][j] = oth_matrix.B[i][j];
+        end
+    end
+    else
+        $fatal("Other matrix has other dimentions!");
+endtask : copy_arrays
+
+task base_matrix::mix_arrays(base_matrix oth_matrix);
+    if( ( oth_matrix.Width == this.Width ) && ( oth_matrix.Height == this.Height ) )
+    begin
+        foreach(R[i,j])
+        begin
+            this.R[i][j] = ( this.R[i][j] + oth_matrix.R[i][j] ) >> 1;
+            this.G[i][j] = ( this.G[i][j] + oth_matrix.G[i][j] ) >> 1;
+            this.B[i][j] = ( this.B[i][j] + oth_matrix.B[i][j] ) >> 1;
+        end
+    end
+    else
+        $fatal("Other matrix has other dimentions!");
+endtask : mix_arrays
+
 task base_matrix::find_and_save_gist();
     cycle_s.itoa( cycle );
     gist.find_gist( R, G, B );
     gist.save_gist( path2folder, image_name, cycle_s );
 endtask : find_and_save_gist
 
-// increment cycle variable
 task base_matrix::cycle_inc();
     this.cycle++;
 endtask : cycle_inc

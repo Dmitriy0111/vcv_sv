@@ -67,8 +67,16 @@ module MinesweeperFPGA_tb;
     initial
     begin
         case(use_matrix)
-            "img_matrix":   matrix_out = img_matrix::create( 800, 528, "../output_images/", "out_image_");
-            "ppm_matrix":   matrix_out = ppm_matrix::create( 800, 528, "../output_images/", "out_image_");
+            "img_matrix":
+            begin
+                img_matrix l_matrix_out = new( 800, 528, "../output_images/", "out_image_", , { ".bmp" } );
+                matrix_out = l_matrix_out;
+            end
+            "ppm_matrix":
+            begin
+                ppm_matrix l_matrix_out = new( 800, 528, "../output_images/", "out_image_", "P3" );
+                matrix_out = l_matrix_out;
+            end
         endcase
     end
 

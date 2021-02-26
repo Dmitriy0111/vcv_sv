@@ -21,12 +21,13 @@ class gist_c;
     int             G_gist[256];
     int             B_gist[256];
     
-    extern task     find_gist(ref bit [7 : 0] R[][], ref bit [7 : 0] G[][], ref bit [7 : 0] B[][]);
-    extern task     save_gist(string path2folder, string image_name, string pre_suffix);
+    extern task clean_gist();
+    extern task find_gist(ref bit [7 : 0] R[][], ref bit [7 : 0] G[][], ref bit [7 : 0] B[][]);
+    extern task save_gist(string path2folder, string image_name, string pre_suffix);
 
 endclass : gist_c
 
-task gist_c::find_gist(ref bit [7 : 0] R[][], ref bit [7 : 0] G[][], ref bit [7 : 0] B[][]);
+task gist_c::clean_gist();
     foreach( R_gist[i] )
     begin
         R_gist[i] = '0;
@@ -34,6 +35,10 @@ task gist_c::find_gist(ref bit [7 : 0] R[][], ref bit [7 : 0] G[][], ref bit [7 
         B_gist[i] = '0;
         grey_gist[i] = '0;
     end
+endtask : clean_gist
+
+task gist_c::find_gist(ref bit [7 : 0] R[][], ref bit [7 : 0] G[][], ref bit [7 : 0] B[][]);
+    this.clean_gist();
     foreach( R[i,j] )
     begin
         R_gist[ R[i][j] ]++;
