@@ -22,7 +22,7 @@ module test_matrix_tb;
                         height_i = 768,
                         path2folder_i = "../input_images/",
                         matrix_name_i = "in_image_",
-                        use_matrix_i = "pat_matrix";
+                        use_matrix_i = "base_matrix";
 
     parameter           width_o = 1024,
                         height_o = 768,
@@ -48,9 +48,10 @@ module test_matrix_tb;
     initial
     begin
         case( use_matrix_i )
-            "img_matrix"    : matrix_in = img_matrix::create( width_i, height_i, path2folder_i, matrix_name_i, ".jpg", {".jpg"} );
-            "ppm_matrix"    : matrix_in = ppm_matrix::create( width_i, height_i, path2folder_i, matrix_name_i, "P3", {"P3"} );
-            "pat_matrix"    : matrix_in = pat_matrix::create( width_i, height_i, path2folder_i, matrix_name_i, "Archimed", );
+            "img_matrix"    : matrix_in = img_matrix ::create( width_i, height_i, path2folder_i, matrix_name_i, ".jpg", {".jpg"} );
+            "ppm_matrix"    : matrix_in = ppm_matrix ::create( width_i, height_i, path2folder_i, matrix_name_i, "P3", {"P3"} );
+            "pat_matrix"    : matrix_in = pat_matrix ::create( width_i, height_i, path2folder_i, matrix_name_i, "Archimed", );
+            "base_matrix"   : matrix_in = base_matrix::create( width_i, height_i, path2folder_i, matrix_name_i, ".data", {".data"} );
             default         : $fatal();
         endcase
         matrix_in.load_matrix();
@@ -59,8 +60,9 @@ module test_matrix_tb;
     initial
     begin
         case( use_matrix_o )
-            "img_matrix"    : matrix_out = img_matrix::create( width_o, height_o, path2folder_o, matrix_name_o, ".jpg", {".jpg"} );
-            "ppm_matrix"    : matrix_out = ppm_matrix::create( width_o, height_o, path2folder_o, matrix_name_o, "P3", {"P3"} );
+            "img_matrix"    : matrix_out = img_matrix ::create( width_o, height_o, path2folder_o, matrix_name_o, ".jpg", {".jpg"} );
+            "ppm_matrix"    : matrix_out = ppm_matrix ::create( width_o, height_o, path2folder_o, matrix_name_o, "P3", {"P3"} );
+            "base_matrix"   : matrix_out = base_matrix::create( width_o, height_o, path2folder_o, matrix_name_o, ".data", {".data"} );
             default         : $fatal();
         endcase
     end

@@ -39,7 +39,7 @@ class base_matrix;
     string              out_format[$];
     string              in_format;
 
-    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
+    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[]={".data"});
 
     extern virtual function int get_width();
     extern virtual function int get_height();
@@ -74,9 +74,11 @@ class base_matrix;
 
     extern virtual task reset_pos();
 
+    extern static function base_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[] = {".data"});
+
 endclass : base_matrix
 
-function base_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
+function base_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[]={".data"});
     Height = Height_i;
     Width  = Width_i; 
     Resolution = Width * Height;
@@ -146,11 +148,48 @@ function string base_matrix::path2file(string format);
 endfunction : path2file
 
 task base_matrix::load_matrix();
-    $fatal("Base class task called!");
+    int err_cnt = 0;
+    do
+    begin
+        fn = path2file( ".data" );
+        fd = $fopen( fn, "rb" );
+        if( fd == 0 )
+        begin
+            cycle = '0;
+            err_cnt++;
+            if( err_cnt == 7 )
+                $fatal("Input file opening error! Simulation stop!");
+        end
+    end
+    while( fd == 0 );
+
+    for( int j = 0 ; j < Height ; j++ )
+        for( int i = 0 ; i < Width ; i++ )
+            $fscanf( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
+
+    $fclose( fd );
 endtask : load_matrix
 
 task base_matrix::save_matrix();
-    $fatal("Base class task called!");
+    fn = path2file( ".data" );
+
+    fd = $fopen( fn, "wb" );
+
+    if( !fd )
+    begin
+        $display( "file is not open!" );
+        $stop;
+    end
+    
+    for( int j = 0 ; j < Height ; j++ )
+        for( int i = 0 ; i < Width ; i++ )
+            $fwrite( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
+
+    $fflush( fd );
+    $fclose( fd );
+
+    $display( "next image loaded at time %tps", $time );
+    cycle_inc();
 endtask : save_matrix
 
 // task for setting image pixel value in RGB format
@@ -290,5 +329,10 @@ task base_matrix::reset_pos();
     p_y = 0;
     p_c = 0;
 endtask : reset_pos
+
+function base_matrix base_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[] = {".data"});
+    base_matrix ret_matrix = new(Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i);
+    return ret_matrix;
+endfunction : create
 
 `endif // BASE_MATRIX__SV

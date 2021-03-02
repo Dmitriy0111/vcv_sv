@@ -77,7 +77,7 @@ sim_gui: sim_dir
 
 ########################################################
 # compile dpi lib for working with Active-HDL
-comp_dpi_vcv_lib:
+comp_dpi_vcv_lib_active:
 	mkdir -p dpi_vcv_lib
 	gcc -shared -Bsymbolic \
 	-I$(PATH2ACTIVE_HDL)\..\PLI\Include \
@@ -88,14 +88,26 @@ comp_dpi_vcv_lib:
 	-l:svdpi_exp.dll \
 	-laldecpli \
 	-l:aldecpli.dll \
-	-o dpi_vcv_lib\dpi_vcv_lib.lib \
+	-o dpi_vcv_lib\dpi_vcv_lib.dll \
+	ver_classes\dpi_src\help.c \
+	ver_classes\dpi_src\image.c
+
+comp_dpi_vcv_lib_modelsim:
+	mkdir -p dpi_vcv_lib
+	gcc -shared -Bsymbolic \
+	-I$(PATH2MODELSIM)\..\include \
+	-L$(PATH2MODELSIM) \
+	-Iver_classes\dpi_h \
+	-lmtipli \
+	-l:mtipli.dll \
+	-o dpi_vcv_lib\dpi_vcv_lib.dll \
 	ver_classes\dpi_src\help.c \
 	ver_classes\dpi_src\image.c
 
 clean_dpi_vcv_lib:
 	rm -rfd dpi_vcv_lib
 
-comp_dpi_lib:
+comp_dpi_lib_active:
 	mkdir -p dpi_lib
 	gcc -shared -Bsymbolic \
 	-I$(PATH2ACTIVE_HDL)\..\PLI\Include \
