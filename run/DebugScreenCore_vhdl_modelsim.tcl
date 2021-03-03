@@ -1,5 +1,5 @@
 #
-# File            :   DebugScreenCore_vhdl.tcl
+# File            :   DebugScreenCore_vhdl_modelsim.tcl
 # Autor           :   Vlasov D.V
 # Data            :   01.06.2019
 # Language        :   TCL
@@ -7,7 +7,7 @@
 # Copyright(c)    :   2019-2021 Vlasov D.V
 #
 
-set test    "DebugScreenCore_vhdl"
+set test "DebugScreenCore_vhdl"
     
 set i0 +incdir+../ver_classes/pkg
 set i1 +incdir+../tb

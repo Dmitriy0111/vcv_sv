@@ -1,5 +1,5 @@
 #
-# File            :   ppm_test.tcl
+# File            :   ppm_test_modelsim.tcl
 # Autor           :   Vlasov D.V
 # Data            :   20.02.2021
 # Language        :   TCL
@@ -7,7 +7,7 @@
 # Copyright(c)    :   2019-2021 Vlasov D.V
 #
 
-set test    "ppm_test"
+set test "ppm_test"
 
 vlog -sv ../ppm_test/ppm_test.sv
 

@@ -1,17 +1,21 @@
 include help.mk
 
 help:
-	$(info make help             - show this message)
-	$(info make clean            - delete synth and simulation folders)
-	$(info make sim_cmd          - run simulation in cmd mode)
-	$(info make sim              - run simulation in gui mode)
-	$(info make stb_load         - load stb repository)
-	$(info make stb_clean        - clean stb repository)
-	$(info make load_all_rtl     - load rtl repository)
-	$(info make clean_all_rtl    - clean rtl repository)
-	$(info make create_imagesf   - create output_images and input_images folders)
-	$(info make clean_imagesf    - clean output_images and input_images folders)
-	$(info make load_test_image  - load test images in input_images folder)
+	$(info make help				- show this message)
+	$(info make clean				- delete synth and simulation folders)
+	$(info make sim_cmd				- run simulation in cmd mode)
+	$(info make sim					- run simulation in gui mode)
+	$(info make stb_load			- load stb repository)
+	$(info make stb_clean			- clean stb repository)
+	$(info make load_all_rtl		- load rtl repository)
+	$(info make clean_all_rtl		- clean rtl repository)
+	$(info make comp_dpi_vcv_dll	- compile dpi vcv dll)
+	$(info make clean_dpi_vcv_lib	- clean dpi vcv dll)
+	$(info make comp_dpi_dll		- compile dpi dll)
+	$(info make clean_dpi_lib		- clean dpi dll)
+	$(info make create_imagesf		- create output_images and input_images folders)
+	$(info make clean_imagesf		- clean output_images and input_images folders)
+	$(info make load_test_image		- load test images in input_images folder)
 	$(info Open and read the Makefile for details)
 	@true
 
@@ -76,44 +80,63 @@ sim_gui: sim_dir
 	$(VSIM_BIN) $(VSIM_OPT_COMMON) $(VSIM_OPT_GUI) &
 
 ########################################################
-# compile dpi lib for working with Active-HDL
-comp_dpi_vcv_lib:
+# compile dpi dll for working with Active-HDL or Modelsim
+
+ifeq ($(SIM_NAME), Modelsim)
+# Common includes paths
+INCS = \
+-I"$(PATH2MODELSIM)\..\include"
+# Common library paths
+LIBPS = \
+-L"$(PATH2MODELSIM)"
+# Common library names
+LIBNS = \
+-lmtipli \
+-l:mtipli.dll
+endif
+
+ifeq ($(SIM_NAME), Active-HDL)
+# Common includes paths
+INCS = \
+-I"$(PATH2ACTIVE_HDL)\..\PLI\Include"
+# Common library paths
+LIBPS = \
+-L"$(PATH2ACTIVE_HDL)\..\PLI\Lib" \
+-L"$(PATH2ACTIVE_HDL)\..\BIN"
+# Common library names
+LIBNS = \
+-lsvdpi_exp \
+-l:svdpi_exp.dll \
+-laldecpli \
+-l:aldecpli.dll
+endif
+
+comp_dpi_vcv_dll:
 	mkdir -p dpi_vcv_lib
 	gcc -shared -Bsymbolic \
-	-I$(PATH2ACTIVE_HDL)\..\PLI\Include \
-	-L$(PATH2ACTIVE_HDL)\..\PLI\Lib \
-	-L$(PATH2ACTIVE_HDL)\..\BIN \
+	$(INCS) \
+	$(LIBPS) \
 	-Iver_classes\dpi_h \
-	-lsvdpi_exp \
-	-l:svdpi_exp.dll \
-	-laldecpli \
-	-l:aldecpli.dll \
-	-o dpi_vcv_lib\dpi_vcv_lib.lib \
-	ver_classes\dpi_src\help.c \
-	ver_classes\dpi_src\image.c
+	$(LIBNS) \
+	-o dpi_vcv_lib/dpi_vcv_lib.dll \
+	ver_classes/dpi_src/help.c \
+	ver_classes/dpi_src/image.c
 
 clean_dpi_vcv_lib:
 	rm -rfd dpi_vcv_lib
 
-comp_dpi_lib:
+comp_dpi_dll:
 	mkdir -p dpi_lib
 	gcc -shared -Bsymbolic \
-	-I$(PATH2ACTIVE_HDL)\..\PLI\Include \
-	-L$(PATH2ACTIVE_HDL)\..\PLI\Lib \
-	-L$(PATH2ACTIVE_HDL)\..\BIN \
+	$(INCS) \
+	$(LIBPS) \
 	-Idpi_examples \
-	-lsvdpi_exp \
-	-l:svdpi_exp.dll \
-	-laldecpli \
-	-l:aldecpli.dll \
-	-o dpi_lib\dpi_test.lib \
-	dpi_examples\dpi_test.c
+	$(LIBNS) \
+	-o dpi_lib/dpi_test.dll \
+	dpi_examples/dpi_test.c
 
 clean_dpi_lib:
 	rm -rfd dpi_lib
-
-comp_:
-	gcc -shared -Bsymbolic -ID:/Programs/modeltech64_10.5/include -LD:/Programs/modeltech64_10.5/win64 -lmtipli -l:mtipli.dll  -o dpi_test.dll dpi_examples/dpi_test.c
 
 ########################################################
 # working with stb repository

@@ -38,8 +38,24 @@ class base_matrix;
     string              fn;             // image full name
     string              out_format[$];
     string              in_format;
+    // R G B R G B R G B
+    real    rgb2ycbcr_coefs [9] = { 
+                                      0.257 ,   0.504 ,   0.098,
+                                    - 0.148 , - 0.291 ,   0.439,
+                                      0.439 , - 0.368 , - 0.071
+                                };
+    // R G B
+    int     rgb2ycbcr_offs[3] = { 16, 128, 128 };
+    // Y Cb Cr Y Cb Cr Y Cb Cr
+    real    ycbcr2rgb_coefs [9] = { 
+                                    1.164 ,   0.000 ,   1.596,
+                                    1.164 , - 0.392 , - 0.813,
+                                    1.164 ,   2.017 ,   0.000
+                                };
+    // Y Cb Cr
+    int     ycbcr2rgb_offs[3] = { -16, -128, -128 };
 
-    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
+    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[]={".data"});
 
     extern virtual function int get_width();
     extern virtual function int get_height();
@@ -74,9 +90,14 @@ class base_matrix;
 
     extern virtual task reset_pos();
 
+    extern virtual task rgb2ycbcr();
+    extern virtual task ycbcr2rgb();
+
+    extern static function base_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[] = {".data"});
+
 endclass : base_matrix
 
-function base_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "", string out_format_i[]={""});
+function base_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[]={".data"});
     Height = Height_i;
     Width  = Width_i; 
     Resolution = Width * Height;
@@ -146,11 +167,48 @@ function string base_matrix::path2file(string format);
 endfunction : path2file
 
 task base_matrix::load_matrix();
-    $fatal("Base class task called!");
+    int err_cnt = 0;
+    do
+    begin
+        fn = path2file( ".data" );
+        fd = $fopen( fn, "rb" );
+        if( fd == 0 )
+        begin
+            cycle = '0;
+            err_cnt++;
+            if( err_cnt == 7 )
+                $fatal("Input file opening error! Simulation stop!");
+        end
+    end
+    while( fd == 0 );
+
+    for( int j = 0 ; j < Height ; j++ )
+        for( int i = 0 ; i < Width ; i++ )
+            $fscanf( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
+
+    $fclose( fd );
 endtask : load_matrix
 
 task base_matrix::save_matrix();
-    $fatal("Base class task called!");
+    fn = path2file( ".data" );
+
+    fd = $fopen( fn, "wb" );
+
+    if( !fd )
+    begin
+        $display( "file is not open!" );
+        $stop;
+    end
+    
+    for( int j = 0 ; j < Height ; j++ )
+        for( int i = 0 ; i < Width ; i++ )
+            $fwrite( fd, "%c%c%c", R[i][j], G[i][j], B[i][j] );
+
+    $fflush( fd );
+    $fclose( fd );
+
+    $display( "next image loaded at time %tps", $time );
+    cycle_inc();
 endtask : save_matrix
 
 // task for setting image pixel value in RGB format
@@ -290,5 +348,50 @@ task base_matrix::reset_pos();
     p_y = 0;
     p_c = 0;
 endtask : reset_pos
+
+task base_matrix::rgb2ycbcr();
+    int Y_comp;
+    int Cb_comp;
+    int Cr_comp;
+
+    foreach(R[i,j])
+    begin
+        Y_comp  = rgb2ycbcr_coefs[0]*R[i][j] + rgb2ycbcr_coefs[1]*G[i][j] + rgb2ycbcr_coefs[2]*B[i][j] + rgb2ycbcr_offs[0];
+        Cb_comp = rgb2ycbcr_coefs[3]*R[i][j] + rgb2ycbcr_coefs[4]*G[i][j] + rgb2ycbcr_coefs[5]*B[i][j] + rgb2ycbcr_offs[1];
+        Cr_comp = rgb2ycbcr_coefs[6]*R[i][j] + rgb2ycbcr_coefs[7]*G[i][j] + rgb2ycbcr_coefs[8]*B[i][j] + rgb2ycbcr_offs[2];
+
+        R[i][j] = Y_comp;
+        G[i][j] = Cb_comp;
+        B[i][j] = Cr_comp;
+    end
+endtask : rgb2ycbcr
+
+task base_matrix::ycbcr2rgb();
+    int Y_comp;
+    int Cb_comp;
+    int Cr_comp;
+    int R_comp;
+    int G_comp;
+    int B_comp;
+    foreach(R[i,j])
+    begin
+        Y_comp  = R[i][j] + ycbcr2rgb_offs[0];
+        Cb_comp = G[i][j] + ycbcr2rgb_offs[1];
+        Cr_comp = B[i][j] + ycbcr2rgb_offs[2];
+
+        R_comp = ycbcr2rgb_coefs[0]*Y_comp + ycbcr2rgb_coefs[1]*Cb_comp + ycbcr2rgb_coefs[2]*Cr_comp;
+        G_comp = ycbcr2rgb_coefs[3]*Y_comp + ycbcr2rgb_coefs[4]*Cb_comp + ycbcr2rgb_coefs[5]*Cr_comp;
+        B_comp = ycbcr2rgb_coefs[6]*Y_comp + ycbcr2rgb_coefs[7]*Cb_comp + ycbcr2rgb_coefs[8]*Cr_comp;
+
+        R[i][j] = (R_comp < 0) ? 0 : ( (R_comp > 255) ? 255 : R_comp );
+        G[i][j] = (G_comp < 0) ? 0 : ( (G_comp > 255) ? 255 : G_comp );
+        B[i][j] = (B_comp < 0) ? 0 : ( (B_comp > 255) ? 255 : B_comp );
+    end
+endtask : ycbcr2rgb
+
+function base_matrix base_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[] = {".data"});
+    base_matrix ret_matrix = new(Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i);
+    return ret_matrix;
+endfunction : create
 
 `endif // BASE_MATRIX__SV

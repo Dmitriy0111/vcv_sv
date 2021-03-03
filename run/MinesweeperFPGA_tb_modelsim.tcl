@@ -1,5 +1,5 @@
 #
-# File            :   MinesweeperFPGA_tb.tcl
+# File            :   MinesweeperFPGA_tb_modelsim.tcl
 # Autor           :   Vlasov D.V
 # Data            :   01.06.2019
 # Language        :   TCL
@@ -7,7 +7,7 @@
 # Copyright(c)    :   2019-2021 Vlasov D.V
 #
 
-set test    "MinesweeperFPGA_tb"
+set test "MinesweeperFPGA_tb"
 
 vlib work
 

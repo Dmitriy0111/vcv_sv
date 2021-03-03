@@ -1,9 +1,9 @@
 #
-# File            :   dpi_test.tcl
+# File            :   dpi_test_active.tcl
 # Autor           :   Vlasov D.V
 # Data            :   23.02.2020
 # Language        :   TCL
-# Description     :   This is script for running dpi example test
+# Description     :   This is script for running dpi example test (Active-HDL)
 # Copyright(c)    :   2019-2021 Vlasov D.V
 #
 

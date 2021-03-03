@@ -1,5 +1,5 @@
 #
-# File            :   DebugScreenCore_sv.tcl
+# File            :   DebugScreenCore_sv_modelsim.tcl
 # Autor           :   Vlasov D.V
 # Data            :   01.06.2019
 # Language        :   TCL
@@ -7,7 +7,7 @@
 # Copyright(c)    :   2019-2021 Vlasov D.V
 #
 
-set test    "DebugScreenCore_sv"
+set test "DebugScreenCore_sv"
     
 set i0 +incdir+../ver_classes/pkg
 set i1 +incdir+../rtl/DebugScreenCore/rtl/sv

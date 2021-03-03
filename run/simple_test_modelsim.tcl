@@ -1,15 +1,15 @@
 #
-# File            :   test_matrix_tb_modelsim.tcl
+# File            :   simple_test_modelsim.tcl
 # Autor           :   Vlasov D.V
-# Data            :   01.06.2019
+# Data            :   03.03.2021
 # Language        :   TCL
-# Description     :   This is script for running matrix testbench (Modelsim)
+# Description     :   This is script for running simple testbench (Modelsim)
 # Copyright(c)    :   2019-2021 Vlasov D.V
 #
 
 vlib work
 
-set test    "test_matrix_tb"
+set test    "simple_test"
 
 set i0 +incdir+../ver_classes/pkg
 set i1 +incdir+../tb
@@ -19,8 +19,8 @@ set s1 ../tb/*.*v
 
 vlog -sv -dpiheader ../ver_classes/dpi_h/dpiheader.h $i0 $i1 $s0 $s1 ../ver_classes/dpi_src/image.c ../ver_classes/dpi_src/help.c 
 
-vsim -novopt work.test_matrix_tb
-add wave -position insertpoint sim:/test_matrix_tb/*
+vsim -novopt work.simple_test
+add wave -position insertpoint sim:/simple_test/*
 
 run -all
 

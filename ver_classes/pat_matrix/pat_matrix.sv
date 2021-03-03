@@ -14,23 +14,29 @@
 
 class pat_matrix extends base_matrix;
 
-    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "RGB_lines", string out_format_i[] = {"NONE"});
+    extern function new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "Grad", string out_format_i[] = {"NONE"});
 
     extern task load_matrix();
+    extern task save_matrix();
     
     extern task gen_data();
 
-    extern static function pat_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "RGB_lines", string out_format_i[] = {"NONE"});
+    extern static function pat_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "Grad", string out_format_i[] = {"NONE"});
 
 endclass : pat_matrix
 
-function pat_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "RGB_lines", string out_format_i[] = {"NONE"});
+function pat_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "Grad", string out_format_i[] = {"NONE"});
     super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
 endfunction : new
 
 task pat_matrix::load_matrix();
     gen_data();
 endtask : load_matrix
+
+task pat_matrix::save_matrix();
+    $display("Pattern matrix doesnt have save method");
+    $fatal();
+endtask : save_matrix
 
 task pat_matrix::gen_data();
     $display("Generating matrix start at time    %tps", $time);
@@ -202,7 +208,7 @@ task pat_matrix::gen_data();
     $display("Generating matrix complete at time %tps", $time);
 endtask : gen_data
 
-function pat_matrix pat_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "RGB_lines", string out_format_i[] = {"NONE"});
+function pat_matrix pat_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "Grad", string out_format_i[] = {"NONE"});
     pat_matrix ret_matrix = new(Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i);
     return ret_matrix;
 endfunction : create
