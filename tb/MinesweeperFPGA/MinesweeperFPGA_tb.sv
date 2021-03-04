@@ -12,7 +12,7 @@ module MinesweeperFPGA_tb;
     timeunit            1ns;
     timeprecision       1ns;
 
-    import work_pkg::*;
+    import vcv_sv_pkg::*;
     import keyboard_pkg::*;
 
     parameter           T = 40,             // 25 MHz

@@ -18,5 +18,11 @@ int get_current_time() {
 
     gettimeofday(&t,NULL);
 
-    return t.tv_sec*1000+t.tv_usec/1000; 
+    return t.tv_sec*1000+t.tv_usec/1000;
+}
+
+int run_other_app(const char * prog_param) {
+    vpi_printf("Start program: %s %d\n", prog_param, get_current_time());
+    system(prog_param);
+    vpi_printf("Complete program: %s %d\n", prog_param, get_current_time());
 }

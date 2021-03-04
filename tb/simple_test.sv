@@ -12,9 +12,9 @@ module simple_test;
     timeunit            1ns;
     timeprecision       1ns;
 
-    import work_pkg::*;
+    import vcv_sv_pkg::*;
 
-    parameter           rep_c = 20;
+    parameter           rep_c = 1;
                         
     parameter           width_i = 1024,
                         height_i = 768,
@@ -35,6 +35,8 @@ module simple_test;
     event               start_compare;
 
     base_matrix matrix_in;
+
+    base_matrix matrix_pat = pat_matrix ::create( width_i, height_i, path2folder_i, matrix_name_i, "Grad" );
 
     base_matrix matrix_comp;
 
@@ -76,6 +78,7 @@ module simple_test;
     // working with output matrix
     initial
     fork
+        matrix_pat.load_matrix();
         forever
         begin
             wait(start_compare.triggered);
@@ -89,19 +92,18 @@ module simple_test;
             begin
                 matrix_in.load_matrix();
             end
-            case( $urandom_range(0,9) )
+            case( $urandom_range(0,2) )
                 0       : rgb = rgb;
                 1       : rgb = $urandom_range(0,2**24-1);
                 2       : rgb = ~rgb;
-                3       : rgb = rgb ^ $urandom_range(0,2**24-1);
-                4       : rgb = rgb & $urandom_range(0,2**24-1);
                 default : rgb = rgb;
             endcase
             if( matrix_out.set_image_RGB( rgb ) )
             begin
+                matrix_out.mix_arrays( matrix_pat );
+                matrix_out.save_matrix();
                 ->start_compare;
                 #0;
-                matrix_out.save_matrix();
                 rep_cycles++;
                 if( rep_cycles == rep_c )
                     $stop;

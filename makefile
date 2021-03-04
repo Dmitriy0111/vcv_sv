@@ -184,8 +184,8 @@ clean_imagesf:
 	rm -rfd input_images
 
 create_imagesf:
-	mkdir output_images
-	mkdir input_images
+	mkdir -p output_images
+	mkdir -p input_images
 
 load_test_image:
 	cp test_image/Penguins.jpg input_images/in_image_0.jpg

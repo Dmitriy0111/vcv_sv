@@ -89,4 +89,9 @@ DPI_LINK_DECL DPI_DLLESPEC
 int
 get_current_time();
 
+DPI_LINK_DECL DPI_DLLESPEC
+int
+run_other_app(
+    const char* prog_param);
+
 #endif 

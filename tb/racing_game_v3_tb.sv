@@ -12,7 +12,7 @@ module racing_game_v3_tb;
     timeunit            1ns;
     timeprecision       1ns;
 
-    import work_pkg::*;
+    import vcv_sv_pkg::*;
 
     parameter           T = 10,
                         rst_delay = 7,

@@ -93,6 +93,8 @@ class base_matrix;
     extern virtual task rgb2ycbcr();
     extern virtual task ycbcr2rgb();
 
+    extern virtual task clnpix();
+
     extern static function base_matrix create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[] = {".data"});
 
 endclass : base_matrix
@@ -388,6 +390,15 @@ task base_matrix::ycbcr2rgb();
         B[i][j] = (B_comp < 0) ? 0 : ( (B_comp > 255) ? 255 : B_comp );
     end
 endtask : ycbcr2rgb
+
+task base_matrix::clnpix();
+    foreach(R[i,j])
+    begin
+        R[i][j] = '0;
+        G[i][j] = '0;
+        B[i][j] = '0;
+    end
+endtask : clnpix
 
 function base_matrix base_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".data", string out_format_i[] = {".data"});
     base_matrix ret_matrix = new(Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i);

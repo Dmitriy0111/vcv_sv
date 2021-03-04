@@ -1,5 +1,5 @@
 #
-# File            :   racing_game_v3_tb_modelsim.tcl
+# File            :   racing_game_v3_tb.tcl
 # Autor           :   Vlasov D.V
 # Data            :   01.06.2019
 # Language        :   TCL
