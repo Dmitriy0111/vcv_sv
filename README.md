@@ -27,17 +27,18 @@
     3) racing_game_v3_tb is testbench for modified racing game (https://github.com/dmitriy0111/wrapper_for_8bitworkshop based on https://github.com/sehugg/fpga-examples). TEST_NAME=racing_game_v3_tb;
     4) test_hvsync_tb is testbench for modified hvsync test (https://github.com/dmitriy0111/wrapper_for_8bitworkshop based on https://github.com/sehugg/fpga-examples). TEST_NAME=test_hvsync_tb;
     5) test_matrix_tb is testbench for testing saving and loading test images (Penguins). TEST_NAME=test_matrix_tb;
-    6) dpi_test is testbench for working with dpi and systemverilog. TEST_NAME=dpi_test;
+    6) dpi_test is testbench for working with DPI-C and SystemVerilog. TEST_NAME=dpi_test;
     7) simple_test is testbench for testing features matrixes. TEST_NAME=simple_test;
 
 ## Folders:
 
 | Folder name   | Description                                                               |
 |---------------|---------------------------------------------------------------------------|
+| doc           | This folder consist documentaion                                          |
 | dpi_examples  | This folder consist base dpi examples for working with DPI-C              |
 | rtl           | This folder consist rtl designs for testing                               |
 | run           | This folder consist tcl scripts for running simulation process            |
 | stb           | This folder consist stb repository                                        |
-| tb            | This folder consist testbenches for rtl folder                            |
+| tb            | This folder consist testbenches for rtl designs                           |
 | test_image    | This folder consist Penguins images in JPEG, PNG, TGA, BMP, PPM formats   |
 | ver_classes   | This folder consist components for verification process                   |
