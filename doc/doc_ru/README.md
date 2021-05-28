@@ -1,14 +1,14 @@
 # README
 
-## Эта папка содержит документацию на отдельные верификационные компоненты
+## Р­С‚Р° РїР°РїРєР° СЃРѕРґРµСЂР¶РёС‚ РґРѕРєСѓРјРµРЅС‚Р°С†РёСЋ РЅР° РѕС‚РґРµР»СЊРЅС‹Рµ РІРµСЂРёС„РёРєР°С†РёРѕРЅРЅС‹Рµ РєРѕРјРїРѕРЅРµРЅС‚С‹
 
-| Имя класса    | Файл документации                 | Файл исходного кода                                           |
+| РРјСЏ РєР»Р°СЃСЃР°    | Р¤Р°Р№Р» РґРѕРєСѓРјРµРЅС‚Р°С†РёРё                 | Р¤Р°Р№Р» РёСЃС…РѕРґРЅРѕРіРѕ РєРѕРґР°                                           |
 | ------------- | --------------------------------- | ------------------------------------------------------------- |
 | base_matrix   | [base_matrix.md](base_matrix.md)  | [base_matrix.sv](../../ver_classes/base_matrix.sv)            |
 | ppm_matrix    | [ppm_matrix.md](ppm_matrix.md)    | [ppm_matrix.sv](../../ver_classes/ppm_matrix/ppm_matrix.sv)   |
 | img_matrix    | [img_matrix.md](img_matrix.md)    | [img_matrix.sv](../../ver_classes/img_matrix/img_matrix.sv)   |
 | pat_matrix    | [pat_matrix.md](pat_matrix.md)    | [pat_matrix.sv](../../ver_classes/pat_matrix/pat_matrix.sv)   |
 
-"C" функции импортируемые в SystemVerilog код [image.c](../../ver_classes/dpi_src/image.c) : [image.md](image.md).
+"C" С„СѓРЅРєС†РёРё РёРјРїРѕСЂС‚РёСЂСѓРµРјС‹Рµ РІ SystemVerilog РєРѕРґ [image.c](../../ver_classes/dpi_src/image.c) : [image.md](image.md).
 
-## Примеры использования классов можно найти в папке tb.
+## РџСЂРёРјРµСЂС‹ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РєР»Р°СЃСЃРѕРІ РјРѕР¶РЅРѕ РЅР°Р№С‚Рё РІ РїР°РїРєРµ tb.

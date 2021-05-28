@@ -26,7 +26,6 @@ module ppm_test;
     int                 Height_in;
     int                 Width_in;
 
-    
     string              fn;
     string              out_format;
     string              in_format;
