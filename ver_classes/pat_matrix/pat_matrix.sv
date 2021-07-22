@@ -27,6 +27,8 @@ endclass : pat_matrix
 
 function pat_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "Grad", string out_format_i[] = {"NONE"});
     super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
+
+    $timeformat(-12,3,"ps",20);
 endfunction : new
 
 task pat_matrix::load_matrix();
@@ -39,8 +41,26 @@ task pat_matrix::save_matrix();
 endtask : save_matrix
 
 task pat_matrix::gen_data();
-    $display("Generating matrix start at time    %tps", $time);
+    $display("Generating matrix start at time %t", $time);
     case( in_format )
+        "Black_screen":
+        begin
+            foreach(R[i,j])
+            begin
+                R[i][j] = '0;
+                G[i][j] = '0;
+                B[i][j] = '0;
+            end
+        end
+        "White_screen":
+        begin
+            foreach(R[i,j])
+            begin
+                R[i][j] = '1;
+                G[i][j] = '1;
+                B[i][j] = '1;
+            end
+        end
         "RGB_columns":
         begin
             foreach(R[i,j])
@@ -205,7 +225,7 @@ task pat_matrix::gen_data();
             $stop;
         end
     endcase
-    $display("Generating matrix complete at time %tps", $time);
+    $display("Generating matrix complete at time %t", $time);
 endtask : gen_data
 
 function pat_matrix pat_matrix::create(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "Grad", string out_format_i[] = {"NONE"});

@@ -119,6 +119,8 @@ function base_matrix::new(int Width_i, int Height_i, string path2folder_i, strin
     // init help variables
     path2folder = path2folder_i;
     image_name = image_name_i;
+
+    $timeformat(-12,3,"ps",20);
 endfunction : new
 
 function int base_matrix::get_width();
@@ -209,7 +211,7 @@ task base_matrix::save_matrix();
     $fflush( fd );
     $fclose( fd );
 
-    $display( "next image loaded at time %tps", $time );
+    $display( "next image loaded at time %t", $time );
     cycle_inc();
 endtask : save_matrix
 
@@ -238,7 +240,7 @@ function bit base_matrix::set_image_RGB(bit[23 : 0] pixel_rgb);
         p_x = '0;
         p_y = '0;
         p_c = '0;
-        $display("Image received at %tps", $time);
+        $display("Image received at %t", $time);
     end
 
     return eoi;

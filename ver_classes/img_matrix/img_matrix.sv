@@ -38,6 +38,8 @@ endclass : img_matrix
 
 function img_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = ".jpg", string out_format_i[] = {".jpg"});
     super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
+
+    $timeformat(-12,3,"ps",20);
 endfunction : new
 
 task img_matrix::save_matrix();
@@ -97,7 +99,7 @@ task img_matrix::load_matrix();
 
     dpi_free_image();
 
-    $display( "next image loaded at time %tps", $time );
+    $display( "next image loaded at time %t", $time );
     cycle_inc();
 endtask : load_matrix
 

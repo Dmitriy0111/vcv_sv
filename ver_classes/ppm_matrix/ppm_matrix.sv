@@ -25,6 +25,8 @@ endclass : ppm_matrix
 
 function ppm_matrix::new(int Width_i, int Height_i, string path2folder_i, string image_name_i, string in_format_i = "P3", string out_format_i[] = {"P3"});
     super.new( Width_i, Height_i, path2folder_i, image_name_i, in_format_i, out_format_i );
+
+    $timeformat(-12,3,"ps",20);
 endfunction : new
 
 task ppm_matrix::load_matrix();
@@ -115,7 +117,7 @@ task ppm_matrix::save_matrix();
     $fflush( fd );
     $fclose( fd );
 
-    $display( "next image loaded at time %tps", $time );
+    $display( "next image loaded at time %t", $time );
     cycle_inc();
 endtask : save_matrix
 
