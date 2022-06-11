@@ -19,7 +19,7 @@ set s1 ../tb/*.*v
 
 vlog -sv -dpiheader ../ver_classes/dpi_h/dpiheader.h $i0 $i1 $s0 $s1 ../ver_classes/dpi_src/image.c ../ver_classes/dpi_src/help.c 
 
-vsim -novopt work.test_matrix_tb
+vsim work.test_matrix_tb
 add wave -position insertpoint sim:/test_matrix_tb/*
 
 run -all

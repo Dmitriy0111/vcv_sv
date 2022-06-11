@@ -76,7 +76,7 @@ task pgm_matrix::load_matrix();
                         GRAY[i+j*Width] = Gray_int;
                     end
                     else begin
-                        $fscanf( fd, "%d %d ", Gray_int[CW-1 : 8] , Gray_int[7 : 0] );  
+                        $fscanf( fd, "%d %d ", Gray_int[15 : 8] , Gray_int[7 : 0] );  
                         GRAY[i+j*Width] = Gray_int;
                     end
                 end
@@ -95,6 +95,7 @@ task pgm_matrix::load_matrix();
 endtask : load_matrix
 
 task pgm_matrix::save_matrix();
+    logic [CW-1 : 0] Gray_int;
 
     fn = path2file( ".pgm" );
 
@@ -114,10 +115,12 @@ task pgm_matrix::save_matrix();
             for( int i = 0 ; i < Width ; i++ )
                 begin
                     if(CW<=8) begin
-                        $fwrite( fd, "%d ", GRAY[i+j*Width] );
+                        Gray_int = GRAY[i+j*Width];
+                        $fwrite( fd, "%d ", Gray_int );
                     end
                     else begin
-                        $fwrite( fd, "%d %d ", GRAY[i+j*Width][CW-1 : 8], GRAY[i+j*Width][7 : 0] );
+                        Gray_int = GRAY[i+j*Width];
+                        $fwrite( fd, "%d %d ", Gray_int[15 : 8], Gray_int[7 : 0] );
                     end
                 end
     /*else if( out_format[0] == "P5" )
